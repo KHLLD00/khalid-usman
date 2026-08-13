@@ -119,6 +119,110 @@ export function projectQuery(slug: string) {
   });
 }
 
+export type NavItem = {
+  id: string;
+  label: string;
+  url: string;
+  sort_order: number;
+  visible: boolean;
+};
+
+export type Experiment = {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  year: string;
+  image_url: string | null;
+  image_alt: string;
+  external_url: string;
+  sort_order: number;
+  published: boolean;
+};
+
+export type ToolkitItem = {
+  id: string;
+  name: string;
+  category: string | null;
+  sort_order: number;
+  visible: boolean;
+};
+
+export const navItemsQuery = queryOptions({
+  queryKey: ["nav-items", "visible"],
+  queryFn: async (): Promise<NavItem[]> => {
+    const { data, error } = await supabase
+      .from("nav_items")
+      .select("*")
+      .eq("visible", true)
+      .order("sort_order", { ascending: true });
+    if (error) throw error;
+    return (data ?? []) as NavItem[];
+  },
+});
+
+export const allNavItemsQuery = queryOptions({
+  queryKey: ["nav-items", "all"],
+  queryFn: async (): Promise<NavItem[]> => {
+    const { data, error } = await supabase
+      .from("nav_items")
+      .select("*")
+      .order("sort_order", { ascending: true });
+    if (error) throw error;
+    return (data ?? []) as NavItem[];
+  },
+});
+
+export const experimentsQuery = queryOptions({
+  queryKey: ["experiments", "published"],
+  queryFn: async (): Promise<Experiment[]> => {
+    const { data, error } = await supabase
+      .from("experiments")
+      .select("*")
+      .eq("published", true)
+      .order("sort_order", { ascending: true });
+    if (error) throw error;
+    return (data ?? []) as Experiment[];
+  },
+});
+
+export const allExperimentsQuery = queryOptions({
+  queryKey: ["experiments", "all"],
+  queryFn: async (): Promise<Experiment[]> => {
+    const { data, error } = await supabase
+      .from("experiments")
+      .select("*")
+      .order("sort_order", { ascending: true });
+    if (error) throw error;
+    return (data ?? []) as Experiment[];
+  },
+});
+
+export const toolkitItemsQuery = queryOptions({
+  queryKey: ["toolkit-items", "visible"],
+  queryFn: async (): Promise<ToolkitItem[]> => {
+    const { data, error } = await supabase
+      .from("toolkit_items")
+      .select("*")
+      .eq("visible", true)
+      .order("sort_order", { ascending: true });
+    if (error) throw error;
+    return (data ?? []) as ToolkitItem[];
+  },
+});
+
+export const allToolkitItemsQuery = queryOptions({
+  queryKey: ["toolkit-items", "all"],
+  queryFn: async (): Promise<ToolkitItem[]> => {
+    const { data, error } = await supabase
+      .from("toolkit_items")
+      .select("*")
+      .order("sort_order", { ascending: true });
+    if (error) throw error;
+    return (data ?? []) as ToolkitItem[];
+  },
+});
+
 export type SiteSettings = Record<string, string>;
 
 export const settingsQuery = queryOptions({
@@ -140,4 +244,19 @@ export const SETTINGS_FALLBACK: SiteSettings = {
   x_url: "https://x.com/KAY_UIUX",
   instagram_url: "https://www.instagram.com/the.khaleed",
   resume_url: "",
+  hero_eyebrow: "Product Design / UI/UX / Digital Experiences",
+  hero_headline: "I design digital products with clarity and character.",
+  hero_description:
+    "Product designer focused on creating thoughtful digital experiences, interfaces and products.",
+  hero_image_url: "",
+  hero_image_alt: "",
+  primary_cta_text: "View my work",
+  primary_cta_url: "/#work",
+  secondary_cta_text: "Let's talk",
+  secondary_cta_url: "/#contact",
+  about_heading:
+    "I'm Khalid Usman, a product designer interested in making digital products clearer, more useful and more human.",
+  contact_heading: "Let's make something worth using.",
+  footer_headline: "Let's make something worth using.",
+  footer_description: "",
 };

@@ -1,9 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
+import { FeaturedReorder } from "@/components/studio/FeaturedReorder";
 import { TextArea, TextInput } from "@/components/studio/Fields";
 import { supabase } from "@/integrations/supabase/client";
 import { allProjectsQuery, settingsQuery, type SiteSettings } from "@/lib/cms";
+import { describeSupabaseError } from "@/lib/studio";
 import { useState } from "react";
 
 export const Route = createFileRoute("/studio/")({
@@ -59,6 +61,16 @@ function SettingsPanel({ settings }: { settings: SiteSettings }) {
             onChange={(value) => set("behance_url", value)}
           />
           <TextInput
+            label="X URL"
+            value={draft["x_url"] ?? ""}
+            onChange={(value) => set("x_url", value)}
+          />
+          <TextInput
+            label="Instagram URL"
+            value={draft["instagram_url"] ?? ""}
+            onChange={(value) => set("instagram_url", value)}
+          />
+          <TextInput
             label="Resume URL"
             value={draft["resume_url"] ?? ""}
             onChange={(value) => set("resume_url", value)}
@@ -76,9 +88,7 @@ function SettingsPanel({ settings }: { settings: SiteSettings }) {
           {save.isPending ? "Saving…" : "Save site content"}
         </button>
         {saved ? <span className="type-meta text-muted-foreground">Saved</span> : null}
-        {save.error ? (
-          <span className="type-meta">{(save.error as Error).message}</span>
-        ) : null}
+        {save.error ? <span className="type-meta">{describeSupabaseError(save.error)}</span> : null}
       </div>
     </section>
   );
@@ -90,12 +100,18 @@ function StudioHome() {
   const projects = useQuery(allProjectsQuery);
   const settings = useQuery(settingsQuery);
 
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
   const remove = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("projects").delete().eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["projects"] }),
+    onSuccess: () => {
+      setDeleteError(null);
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+    },
+    onError: (error) => setDeleteError(describeSupabaseError(error)),
   });
 
   return (
@@ -126,11 +142,7 @@ function StudioHome() {
             className="flex flex-wrap items-center justify-between gap-4 border-b py-5"
           >
             <div>
-              <Link
-                to="/studio/$id"
-                params={{ id: project.id }}
-                className="type-h3 link-underline"
-              >
+              <Link to="/studio/$id" params={{ id: project.id }} className="type-h3 link-underline">
                 {project.title || "Untitled"}
               </Link>
               <p className="type-meta mt-1 text-muted-foreground">
@@ -162,6 +174,14 @@ function StudioHome() {
           </div>
         ))}
       </div>
+
+      {deleteError ? (
+        <p className="type-meta mt-4 border border-current p-4 text-muted-foreground">
+          {deleteError}
+        </p>
+      ) : null}
+
+      {projects.data ? <FeaturedReorder projects={projects.data} /> : null}
 
       {settings.data ? <SettingsPanel settings={settings.data} /> : null}
     </main>

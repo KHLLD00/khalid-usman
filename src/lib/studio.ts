@@ -3,6 +3,28 @@ import type { ContentBlock, GalleryImage, Project } from "@/lib/cms";
 
 export const BUCKET = "project-images";
 
+type SupabaseLikeError = { message?: string; code?: string } | Error | unknown;
+
+/** Turns a raw Supabase/Postgres error into a short, actionable message for the studio UI. */
+export function describeSupabaseError(error: SupabaseLikeError): string {
+  const code = (error as { code?: string } | null)?.code;
+  const message =
+    error instanceof Error
+      ? error.message
+      : ((error as { message?: string } | null)?.message ?? "Something went wrong.");
+
+  if (code === "23505" || /duplicate key value/i.test(message)) {
+    return "That slug is already used by another project — choose a different one.";
+  }
+  if (code === "42501" || /permission denied|row-level security/i.test(message)) {
+    return "You don't have permission to do that. Try signing in again.";
+  }
+  if (/failed to fetch|network/i.test(message)) {
+    return "Couldn't reach the server. Check your connection and try again.";
+  }
+  return message;
+}
+
 /** Uploads a file to the private portfolio bucket and returns its storage path. */
 export async function uploadImage(file: File): Promise<string> {
   const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";

@@ -15,6 +15,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { ContentBlock } from "@/lib/cms";
 import {
   BLOCK_TYPES,
+  describeSupabaseError,
   emptyProject,
   makeBlock,
   slugify,
@@ -393,7 +394,7 @@ function ProjectEditor() {
       await queryClient.invalidateQueries({ queryKey: ["project"] });
       if (isNew) navigate({ to: "/studio/$id", params: { id: savedId } });
     },
-    onError: (error) => setStatus((error as Error).message),
+    onError: (error) => setStatus(describeSupabaseError(error)),
   });
 
   return (

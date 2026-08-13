@@ -342,6 +342,19 @@
   }
 }
 
+/* Signature project transition ----------------------------------------------
+ * Cover images on the homepage/next-project card share a view-transition-name
+ * with the matching case-study hero image (see lib/view-transition.ts), so
+ * the browser morphs one into the other instead of a plain page swap. Kept
+ * fast and restrained; TanStack Router only engages this when the browser
+ * supports it and the user hasn't requested reduced motion. */
+
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: 0.4s;
+  animation-timing-function: var(--ease-editorial);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

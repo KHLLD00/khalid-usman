@@ -3,16 +3,19 @@ import { Link } from "@tanstack/react-router";
 import { Reveal } from "@/components/site/Reveal";
 import { imageSrc, type Project } from "@/lib/cms";
 import { cn } from "@/lib/utils";
+import { projectViewTransitionName, useViewTransitionEnabled } from "@/lib/view-transition";
 
 function ProjectRow({ project, index }: { project: Project; index: number }) {
   const src = imageSrc(project.cover_image_url ?? project.thumbnail_url);
   const offset = index % 2 === 0;
+  const viewTransition = useViewTransitionEnabled();
 
   return (
     <Reveal as="article" className="rule-top pt-8 md:pt-12">
       <Link
         to="/work/$slug"
         params={{ slug: project.slug }}
+        viewTransition={viewTransition}
         className="group block"
         aria-label={`${project.title} — view case study`}
       >
@@ -36,9 +39,7 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
 
           <div className="type-meta text-muted-foreground md:col-span-4 md:text-right">
             {project.category ? <p>{project.category}</p> : null}
-            <p className="mt-1">
-              {[project.role, project.year].filter(Boolean).join(" · ")}
-            </p>
+            <p className="mt-1">{[project.role, project.year].filter(Boolean).join(" · ")}</p>
           </div>
         </div>
 
@@ -54,6 +55,7 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
               alt={project.cover_image_alt || `${project.title} project cover`}
               loading={index === 0 ? "eager" : "lazy"}
               decoding="async"
+              style={{ viewTransitionName: projectViewTransitionName(project.id) }}
               className="aspect-[16/11] w-full object-cover transition-transform duration-[900ms] ease-editorial group-hover:scale-[1.02]"
             />
           </div>

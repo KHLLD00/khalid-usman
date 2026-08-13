@@ -15,6 +15,7 @@ import {
   SETTINGS_FALLBACK,
   type Project,
 } from "@/lib/cms";
+import { projectViewTransitionName, useViewTransitionEnabled } from "@/lib/view-transition";
 
 export const Route = createFileRoute("/work/$slug")({
   loader: async ({ context, params }) => {
@@ -78,10 +79,16 @@ function Section({
 
 function NextProject({ project }: { project: Project }) {
   const src = imageSrc(project.cover_image_url ?? project.thumbnail_url);
+  const viewTransition = useViewTransitionEnabled();
   return (
     <section className="rule-top">
       <div className="shell py-20 md:py-32">
-        <Link to="/work/$slug" params={{ slug: project.slug }} className="group block">
+        <Link
+          to="/work/$slug"
+          params={{ slug: project.slug }}
+          viewTransition={viewTransition}
+          className="group block"
+        >
           <p className="type-label text-muted-foreground">Next project</p>
           <div className="mt-8 grid gap-8 md:grid-cols-12 md:items-center">
             <div className="md:col-span-7">
@@ -102,6 +109,7 @@ function NextProject({ project }: { project: Project }) {
                   alt={project.cover_image_alt || `${project.title} project cover`}
                   loading="lazy"
                   decoding="async"
+                  style={{ viewTransitionName: projectViewTransitionName(project.id) }}
                   className="aspect-[16/10] w-full object-cover transition-transform duration-[900ms] ease-editorial group-hover:scale-[1.02]"
                 />
               </div>
@@ -196,6 +204,7 @@ function CaseStudy() {
             <img
               src={heroSrc}
               alt={project.hero_image_alt || project.cover_image_alt || `${project.title} hero`}
+              style={{ viewTransitionName: projectViewTransitionName(project.id) }}
               className="aspect-[16/9] w-full object-cover"
               decoding="async"
             />

@@ -47,7 +47,7 @@ export const Route = createFileRoute("/work/$slug")({
       ],
     };
   },
-  component: CaseStudy;
+  component: CaseStudy,
 });
 
 function Section({

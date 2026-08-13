@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as WorkSlugRouteImport } from './routes/work.$slug'
 import { Route as ApiPublicImageSplatRouteImport } from './routes/api/public/image/$'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WorkSlugRoute = WorkSlugRouteImport.update({
@@ -31,30 +37,34 @@ const ApiPublicImageSplatRoute = ApiPublicImageSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/work/$slug': typeof WorkSlugRoute
   '/api/public/image/$': typeof ApiPublicImageSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/work/$slug': typeof WorkSlugRoute
   '/api/public/image/$': typeof ApiPublicImageSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/work/$slug': typeof WorkSlugRoute
   '/api/public/image/$': typeof ApiPublicImageSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/work/$slug' | '/api/public/image/$'
+  fullPaths: '/' | '/auth' | '/work/$slug' | '/api/public/image/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/work/$slug' | '/api/public/image/$'
-  id: '__root__' | '/' | '/work/$slug' | '/api/public/image/$'
+  to: '/' | '/auth' | '/work/$slug' | '/api/public/image/$'
+  id: '__root__' | '/' | '/auth' | '/work/$slug' | '/api/public/image/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
   WorkSlugRoute: typeof WorkSlugRoute
   ApiPublicImageSplatRoute: typeof ApiPublicImageSplatRoute
 }
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/work/$slug': {
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
   WorkSlugRoute: WorkSlugRoute,
   ApiPublicImageSplatRoute: ApiPublicImageSplatRoute,
 }

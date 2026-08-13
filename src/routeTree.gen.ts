@@ -14,6 +14,9 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as StudioRouteImport } from './routes/studio'
 import { Route as StudioIndexRouteImport } from './routes/studio.index'
 import { Route as StudioIdRouteImport } from './routes/studio.$id'
+import { Route as StudioExperimentsRouteImport } from './routes/studio.experiments'
+import { Route as StudioNavigationRouteImport } from './routes/studio.navigation'
+import { Route as StudioToolkitRouteImport } from './routes/studio.toolkit'
 import { Route as WorkSlugRouteImport } from './routes/work.$slug'
 import { Route as ApiPublicImageSplatRouteImport } from './routes/api/public/image/$'
 
@@ -42,6 +45,21 @@ const StudioIdRoute = StudioIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => StudioRoute,
 } as any)
+const StudioExperimentsRoute = StudioExperimentsRouteImport.update({
+  id: '/experiments',
+  path: '/experiments',
+  getParentRoute: () => StudioRoute,
+} as any)
+const StudioNavigationRoute = StudioNavigationRouteImport.update({
+  id: '/navigation',
+  path: '/navigation',
+  getParentRoute: () => StudioRoute,
+} as any)
+const StudioToolkitRoute = StudioToolkitRouteImport.update({
+  id: '/toolkit',
+  path: '/toolkit',
+  getParentRoute: () => StudioRoute,
+} as any)
 const WorkSlugRoute = WorkSlugRouteImport.update({
   id: '/work/$slug',
   path: '/work/$slug',
@@ -58,6 +76,9 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/studio': typeof StudioRouteWithChildren
   '/studio/$id': typeof StudioIdRoute
+  '/studio/experiments': typeof StudioExperimentsRoute
+  '/studio/navigation': typeof StudioNavigationRoute
+  '/studio/toolkit': typeof StudioToolkitRoute
   '/work/$slug': typeof WorkSlugRoute
   '/studio/': typeof StudioIndexRoute
   '/api/public/image/$': typeof ApiPublicImageSplatRoute
@@ -66,6 +87,9 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/studio/$id': typeof StudioIdRoute
+  '/studio/experiments': typeof StudioExperimentsRoute
+  '/studio/navigation': typeof StudioNavigationRoute
+  '/studio/toolkit': typeof StudioToolkitRoute
   '/work/$slug': typeof WorkSlugRoute
   '/studio': typeof StudioIndexRoute
   '/api/public/image/$': typeof ApiPublicImageSplatRoute
@@ -76,6 +100,9 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/studio': typeof StudioRouteWithChildren
   '/studio/$id': typeof StudioIdRoute
+  '/studio/experiments': typeof StudioExperimentsRoute
+  '/studio/navigation': typeof StudioNavigationRoute
+  '/studio/toolkit': typeof StudioToolkitRoute
   '/work/$slug': typeof WorkSlugRoute
   '/studio/': typeof StudioIndexRoute
   '/api/public/image/$': typeof ApiPublicImageSplatRoute
@@ -87,6 +114,9 @@ export interface FileRouteTypes {
     | '/auth'
     | '/studio'
     | '/studio/$id'
+    | '/studio/experiments'
+    | '/studio/navigation'
+    | '/studio/toolkit'
     | '/work/$slug'
     | '/studio/'
     | '/api/public/image/$'
@@ -95,6 +125,9 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/studio/$id'
+    | '/studio/experiments'
+    | '/studio/navigation'
+    | '/studio/toolkit'
     | '/work/$slug'
     | '/studio'
     | '/api/public/image/$'
@@ -104,6 +137,9 @@ export interface FileRouteTypes {
     | '/auth'
     | '/studio'
     | '/studio/$id'
+    | '/studio/experiments'
+    | '/studio/navigation'
+    | '/studio/toolkit'
     | '/work/$slug'
     | '/studio/'
     | '/api/public/image/$'
@@ -154,6 +190,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudioIdRouteImport
       parentRoute: typeof StudioRoute
     }
+    '/studio/experiments': {
+      id: '/studio/experiments'
+      path: '/experiments'
+      fullPath: '/studio/experiments'
+      preLoaderRoute: typeof StudioExperimentsRouteImport
+      parentRoute: typeof StudioRoute
+    }
+    '/studio/navigation': {
+      id: '/studio/navigation'
+      path: '/navigation'
+      fullPath: '/studio/navigation'
+      preLoaderRoute: typeof StudioNavigationRouteImport
+      parentRoute: typeof StudioRoute
+    }
+    '/studio/toolkit': {
+      id: '/studio/toolkit'
+      path: '/toolkit'
+      fullPath: '/studio/toolkit'
+      preLoaderRoute: typeof StudioToolkitRouteImport
+      parentRoute: typeof StudioRoute
+    }
     '/work/$slug': {
       id: '/work/$slug'
       path: '/work/$slug'
@@ -173,11 +230,17 @@ declare module '@tanstack/react-router' {
 
 interface StudioRouteChildren {
   StudioIdRoute: typeof StudioIdRoute
+  StudioExperimentsRoute: typeof StudioExperimentsRoute
+  StudioNavigationRoute: typeof StudioNavigationRoute
+  StudioToolkitRoute: typeof StudioToolkitRoute
   StudioIndexRoute: typeof StudioIndexRoute
 }
 
 const StudioRouteChildren: StudioRouteChildren = {
   StudioIdRoute: StudioIdRoute,
+  StudioExperimentsRoute: StudioExperimentsRoute,
+  StudioNavigationRoute: StudioNavigationRoute,
+  StudioToolkitRoute: StudioToolkitRoute,
   StudioIndexRoute: StudioIndexRoute,
 }
 

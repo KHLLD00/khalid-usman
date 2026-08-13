@@ -32,10 +32,7 @@ function StudioLayout() {
         navigate({ to: "/auth" });
         return;
       }
-      const { data: roles } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("role", "admin");
+      const { data: roles } = await supabase.from("user_roles").select("role").eq("role", "admin");
       if (!active) return;
       setState(roles && roles.length ? "ready" : "denied");
     }
@@ -75,10 +72,28 @@ function StudioLayout() {
   return (
     <div className="min-h-screen">
       <header className="rule-top border-b">
-        <div className="shell flex h-16 items-center justify-between">
-          <div className="flex items-center gap-8">
+        <div className="shell flex h-16 flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center gap-8">
             <Link to="/studio" className="text-sm font-medium">
               Studio
+            </Link>
+            <Link to="/studio" className="type-meta link-underline text-muted-foreground">
+              Projects
+            </Link>
+            <Link
+              to="/studio/navigation"
+              className="type-meta link-underline text-muted-foreground"
+            >
+              Navigation
+            </Link>
+            <Link to="/studio/toolkit" className="type-meta link-underline text-muted-foreground">
+              Toolkit
+            </Link>
+            <Link
+              to="/studio/experiments"
+              className="type-meta link-underline text-muted-foreground"
+            >
+              Experiments
             </Link>
             <Link to="/" className="type-meta link-underline text-muted-foreground">
               View site

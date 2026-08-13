@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { FeaturedReorder } from "@/components/studio/FeaturedReorder";
-import { TextArea, TextInput } from "@/components/studio/Fields";
+import { ImagePicker, TextArea, TextInput } from "@/components/studio/Fields";
 import { supabase } from "@/integrations/supabase/client";
 import { allProjectsQuery, settingsQuery, type SiteSettings } from "@/lib/cms";
 import { describeSupabaseError } from "@/lib/studio";
@@ -37,47 +37,155 @@ function SettingsPanel({ settings }: { settings: SiteSettings }) {
   return (
     <section className="mt-20 border-t pt-10">
       <h2 className="type-h3">Site content</h2>
-      <div className="mt-8 grid gap-6 md:grid-cols-2">
-        <TextArea
-          label="About paragraph"
-          rows={6}
-          value={draft["about_paragraph"] ?? ""}
-          onChange={(value) => set("about_paragraph", value)}
-        />
-        <div className="space-y-6">
-          <TextInput
-            label="Email"
-            value={draft["email"] ?? ""}
-            onChange={(value) => set("email", value)}
-          />
-          <TextInput
-            label="LinkedIn URL"
-            value={draft["linkedin_url"] ?? ""}
-            onChange={(value) => set("linkedin_url", value)}
-          />
-          <TextInput
-            label="Behance URL"
-            value={draft["behance_url"] ?? ""}
-            onChange={(value) => set("behance_url", value)}
-          />
-          <TextInput
-            label="X URL"
-            value={draft["x_url"] ?? ""}
-            onChange={(value) => set("x_url", value)}
-          />
-          <TextInput
-            label="Instagram URL"
-            value={draft["instagram_url"] ?? ""}
-            onChange={(value) => set("instagram_url", value)}
-          />
-          <TextInput
-            label="Resume URL"
-            value={draft["resume_url"] ?? ""}
-            onChange={(value) => set("resume_url", value)}
-            hint="Leave empty to hide the resume link."
-          />
+
+      <div className="mt-8 space-y-10">
+        <div>
+          <h3 className="type-label text-muted-foreground">Hero</h3>
+          <div className="mt-4 grid gap-6 md:grid-cols-2">
+            <TextInput
+              label="Eyebrow"
+              value={draft["hero_eyebrow"] ?? ""}
+              onChange={(value) => set("hero_eyebrow", value)}
+            />
+            <TextInput
+              label="Headline"
+              value={draft["hero_headline"] ?? ""}
+              onChange={(value) => set("hero_headline", value)}
+            />
+            <div className="md:col-span-2">
+              <TextArea
+                label="Description"
+                rows={3}
+                value={draft["hero_description"] ?? ""}
+                onChange={(value) => set("hero_description", value)}
+              />
+            </div>
+            <div className="md:col-span-2">
+              <ImagePicker
+                label="Hero image"
+                value={draft["hero_image_url"] || null}
+                onChange={(value) => set("hero_image_url", value ?? "")}
+              />
+            </div>
+            <TextInput
+              label="Hero image alt text"
+              value={draft["hero_image_alt"] ?? ""}
+              onChange={(value) => set("hero_image_alt", value)}
+              hint="Shown in a monochrome treatment; project imagery elsewhere keeps its own colour."
+            />
+          </div>
+        </div>
+
+        <div>
+          <h3 className="type-label text-muted-foreground">Calls to action</h3>
+          <div className="mt-4 grid gap-6 md:grid-cols-2">
+            <TextInput
+              label="Primary CTA text"
+              value={draft["primary_cta_text"] ?? ""}
+              onChange={(value) => set("primary_cta_text", value)}
+              hint="Rendered as a filled button."
+            />
+            <TextInput
+              label="Primary CTA URL"
+              value={draft["primary_cta_url"] ?? ""}
+              onChange={(value) => set("primary_cta_url", value)}
+              placeholder="/#work"
+            />
+            <TextInput
+              label="Secondary CTA text"
+              value={draft["secondary_cta_text"] ?? ""}
+              onChange={(value) => set("secondary_cta_text", value)}
+              hint="Rendered as a text link with an arrow."
+            />
+            <TextInput
+              label="Secondary CTA URL"
+              value={draft["secondary_cta_url"] ?? ""}
+              onChange={(value) => set("secondary_cta_url", value)}
+              placeholder="/#contact"
+            />
+          </div>
+        </div>
+
+        <div>
+          <h3 className="type-label text-muted-foreground">About &amp; contact</h3>
+          <div className="mt-4 grid gap-6 md:grid-cols-2">
+            <TextInput
+              label="About heading"
+              value={draft["about_heading"] ?? ""}
+              onChange={(value) => set("about_heading", value)}
+            />
+            <TextInput
+              label="Contact heading"
+              value={draft["contact_heading"] ?? ""}
+              onChange={(value) => set("contact_heading", value)}
+              hint="Shown above the contact links on the homepage."
+            />
+            <div className="md:col-span-2">
+              <TextArea
+                label="About paragraph"
+                rows={6}
+                value={draft["about_paragraph"] ?? ""}
+                onChange={(value) => set("about_paragraph", value)}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="type-label text-muted-foreground">Footer</h3>
+          <div className="mt-4 grid gap-6 md:grid-cols-2">
+            <TextInput
+              label="Footer headline"
+              value={draft["footer_headline"] ?? ""}
+              onChange={(value) => set("footer_headline", value)}
+              hint="The closing statement above the footer links. Independent of the contact heading."
+            />
+            <TextInput
+              label="Footer description"
+              value={draft["footer_description"] ?? ""}
+              onChange={(value) => set("footer_description", value)}
+            />
+          </div>
+        </div>
+
+        <div>
+          <h3 className="type-label text-muted-foreground">Contact &amp; social links</h3>
+          <div className="mt-4 grid gap-6 md:grid-cols-2">
+            <TextInput
+              label="Email"
+              value={draft["email"] ?? ""}
+              onChange={(value) => set("email", value)}
+            />
+            <TextInput
+              label="LinkedIn URL"
+              value={draft["linkedin_url"] ?? ""}
+              onChange={(value) => set("linkedin_url", value)}
+            />
+            <TextInput
+              label="Behance URL"
+              value={draft["behance_url"] ?? ""}
+              onChange={(value) => set("behance_url", value)}
+            />
+            <TextInput
+              label="X URL"
+              value={draft["x_url"] ?? ""}
+              onChange={(value) => set("x_url", value)}
+            />
+            <TextInput
+              label="Instagram URL"
+              value={draft["instagram_url"] ?? ""}
+              onChange={(value) => set("instagram_url", value)}
+            />
+            <TextInput
+              label="Resume URL"
+              value={draft["resume_url"] ?? ""}
+              onChange={(value) => set("resume_url", value)}
+              hint="Leave empty to hide the resume link."
+            />
+          </div>
         </div>
       </div>
+
       <div className="mt-8 flex items-center gap-6">
         <button
           type="button"

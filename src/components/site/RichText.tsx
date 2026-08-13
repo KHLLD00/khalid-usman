@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 
 /** Renders plain-text CMS copy: blank lines become paragraphs, "- " lines become lists. */
-export function RichText({ text, className }: { text?: string | null; className?: string }) {
+export function RichText({ text, className }: { text?: string | null | undefined; className?: string | undefined }) {
   if (!text || !text.trim()) return null;
 
   const blocks = text

@@ -56,8 +56,8 @@ function Section({
   text,
 }: {
   label: string;
-  heading?: string;
-  text?: string;
+  heading?: string | undefined;
+  text?: string | undefined;
 }) {
   if (!text || !text.trim()) return null;
   return (

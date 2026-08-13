@@ -9,7 +9,7 @@ const LINKS = [
   { label: "Contact", href: "/#contact" },
 ];
 
-export function Nav({ resumeUrl }: { resumeUrl?: string }) {
+export function Nav({ resumeUrl }: { resumeUrl?: string | undefined }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 

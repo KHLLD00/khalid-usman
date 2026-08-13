@@ -217,6 +217,30 @@ function Home() {
                       </a>
                     </li>
                   ) : null}
+                  {settings["x_url"] ? (
+                    <li>
+                      <a
+                        href={settings["x_url"]}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="link-underline"
+                      >
+                        X ↗
+                      </a>
+                    </li>
+                  ) : null}
+                  {settings["instagram_url"] ? (
+                    <li>
+                      <a
+                        href={settings["instagram_url"]}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="link-underline"
+                      >
+                        Instagram ↗
+                      </a>
+                    </li>
+                  ) : null}
                 </ul>
               </Reveal>
             </div>

@@ -1,33 +1,55 @@
-import type { SiteSettings } from "@/lib/cms";
+import type { NavItem, SiteSettings } from "@/lib/cms";
 
-export function Footer({ settings }: { settings: SiteSettings }) {
+const FALLBACK_LINKS: NavItem[] = [
+  { id: "work", label: "Work", url: "/#work", sort_order: 0, visible: true },
+  { id: "about", label: "About", url: "/#about", sort_order: 1, visible: true },
+  { id: "contact", label: "Contact", url: "/#contact", sort_order: 2, visible: true },
+];
+
+export function Footer({
+  navItems,
+  settings,
+}: {
+  navItems?: NavItem[] | undefined;
+  settings: SiteSettings;
+}) {
   const year = new Date().getFullYear();
+  const links = navItems && navItems.length ? navItems : FALLBACK_LINKS;
+  const email = settings["email"] ?? "";
 
   return (
-    <footer className="rule-top">
-      <div className="shell grid gap-12 py-16 md:grid-cols-12 md:py-20">
+    <footer>
+      {settings["footer_headline"] ? (
+        <div className="shell rule-top py-20 md:py-32">
+          <h2 className="type-display max-w-[18ch]">{settings["footer_headline"]}</h2>
+          {settings["footer_description"] ? (
+            <p className="type-body mt-6 max-w-[46ch] text-muted-foreground">
+              {settings["footer_description"]}
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+
+      <div className="shell grid gap-12 rule-top py-16 md:grid-cols-12 md:py-20">
         <div className="md:col-span-5">
           <p className="text-sm font-medium">Khalid Usman</p>
           <p className="type-meta mt-1 text-muted-foreground">Product Designer</p>
+          {email ? (
+            <a href={`mailto:${email}`} className="type-meta link-underline mt-3 inline-block">
+              {email}
+            </a>
+          ) : null}
         </div>
 
         <nav aria-label="Footer" className="md:col-span-4">
           <ul className="type-meta grid grid-cols-2 gap-3">
-            <li>
-              <a href="/#work" className="link-underline">
-                Work
-              </a>
-            </li>
-            <li>
-              <a href="/#about" className="link-underline">
-                About
-              </a>
-            </li>
-            <li>
-              <a href="/#contact" className="link-underline">
-                Contact
-              </a>
-            </li>
+            {links.map((link) => (
+              <li key={link.id}>
+                <a href={link.url} className="link-underline">
+                  {link.label}
+                </a>
+              </li>
+            ))}
             {settings["resume_url"] ? (
               <li>
                 <a

@@ -1,12 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
+import { ExperimentsList } from "@/components/site/ExperimentsList";
 import { Footer } from "@/components/site/Footer";
 import { Nav } from "@/components/site/Nav";
 import { ProjectList } from "@/components/site/ProjectList";
 import { Reveal } from "@/components/site/Reveal";
 import { RichText } from "@/components/site/RichText";
-import { projectsQuery, settingsQuery, SETTINGS_FALLBACK } from "@/lib/cms";
+import { ToolkitTicker } from "@/components/site/ToolkitTicker";
+import {
+  experimentsQuery,
+  imageSrc,
+  navItemsQuery,
+  projectsQuery,
+  settingsQuery,
+  SETTINGS_FALLBACK,
+  toolkitItemsQuery,
+} from "@/lib/cms";
 
 const TITLE = "Khalid Usman — Product Designer";
 const DESCRIPTION =
@@ -27,6 +37,9 @@ export const Route = createFileRoute("/")({
     await Promise.all([
       context.queryClient.ensureQueryData(projectsQuery),
       context.queryClient.ensureQueryData(settingsQuery),
+      context.queryClient.ensureQueryData(navItemsQuery),
+      context.queryClient.ensureQueryData(toolkitItemsQuery),
+      context.queryClient.ensureQueryData(experimentsQuery),
     ]);
   },
   component: Home,
@@ -41,65 +54,72 @@ const PRINCIPLES = [
   { title: "Character", body: "Useful products can still have personality." },
 ];
 
-const SKILLS = [
-  {
-    label: "Design",
-    items: [
-      "Product Design",
-      "UI Design",
-      "UX Design",
-      "Interaction Design",
-      "Design Systems",
-      "Prototyping",
-    ],
-  },
-  { label: "Tools", items: ["Figma", "FigJam", "Framer", "Notion", "Principle"] },
-];
-
 function Home() {
   const { data: projects } = useSuspenseQuery(projectsQuery);
   const { data: loaded } = useSuspenseQuery(settingsQuery);
+  const { data: navItems } = useSuspenseQuery(navItemsQuery);
+  const { data: toolkitItems } = useSuspenseQuery(toolkitItemsQuery);
+  const { data: experiments } = useSuspenseQuery(experimentsQuery);
   const settings = { ...SETTINGS_FALLBACK, ...loaded };
   const featured = projects.filter((project) => project.featured);
   const shown = featured.length ? featured : projects;
   const email = settings["email"] ?? "";
+  const heroImage = imageSrc(settings["hero_image_url"]);
 
   return (
     <>
-      <Nav resumeUrl={settings["resume_url"] || undefined} />
+      <Nav navItems={navItems} resumeUrl={settings["resume_url"] || undefined} />
 
       <main id="main">
         {/* Hero */}
         <section className="shell pt-40 pb-24 md:pt-56 md:pb-40">
-          <Reveal>
-            <p className="type-label text-muted-foreground">
-              Product Design / UI/UX / Digital Experiences
-            </p>
-          </Reveal>
-          <Reveal delay={80}>
-            <h1 className="type-display mt-8 max-w-[18ch] md:mt-12">
-              I design digital products with clarity and character.
-            </h1>
-          </Reveal>
-          <div className="mt-12 grid gap-10 md:mt-20 md:grid-cols-12 md:items-end">
-            <Reveal delay={140} className="md:col-span-5 md:col-start-7">
-              <p className="type-body max-w-[44ch] text-muted-foreground">
-                Product designer focused on creating thoughtful digital experiences, interfaces
-                and products.
-              </p>
-              <div className="mt-8 flex flex-wrap items-center gap-x-10 gap-y-4">
-                <a href="#work" className="group type-meta inline-flex items-center gap-2">
-                  <span className="link-underline">View my work</span>
-                  <span className="arrow-shift group-hover:translate-y-0.5">↓</span>
-                </a>
-                <a href="#contact" className="group type-meta inline-flex items-center gap-2">
-                  <span className="link-underline">Let&apos;s talk</span>
-                  <span className="arrow-shift group-hover:translate-x-1 group-hover:-translate-y-1">
-                    ↗
-                  </span>
-                </a>
-              </div>
-            </Reveal>
+          <div className="grid gap-16 md:grid-cols-12 md:items-center">
+            <div className={heroImage ? "md:col-span-7" : "md:col-span-12"}>
+              <Reveal>
+                <p className="type-label text-muted-foreground">{settings["hero_eyebrow"]}</p>
+              </Reveal>
+              <Reveal delay={80}>
+                <h1 className="type-display mt-8 max-w-[18ch] md:mt-12">
+                  {settings["hero_headline"]}
+                </h1>
+              </Reveal>
+              <Reveal delay={140} className="mt-10 md:mt-16">
+                <p className="type-body max-w-[44ch] text-muted-foreground">
+                  {settings["hero_description"]}
+                </p>
+                <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
+                  {settings["primary_cta_text"] ? (
+                    <a href={settings["primary_cta_url"] || "#work"} className="btn-primary">
+                      {settings["primary_cta_text"]}
+                    </a>
+                  ) : null}
+                  {settings["secondary_cta_text"] ? (
+                    <a
+                      href={settings["secondary_cta_url"] || "#contact"}
+                      className="group type-meta inline-flex items-center gap-2"
+                    >
+                      <span className="link-underline">{settings["secondary_cta_text"]}</span>
+                      <span className="arrow-shift group-hover:translate-x-1 group-hover:-translate-y-1">
+                        ↗
+                      </span>
+                    </a>
+                  ) : null}
+                </div>
+              </Reveal>
+            </div>
+
+            {heroImage ? (
+              <Reveal delay={100} className="md:col-span-5">
+                <div className="overflow-hidden bg-secondary">
+                  <img
+                    src={heroImage}
+                    alt={settings["hero_image_alt"] || "Portrait of Khalid Usman"}
+                    className="hero-portrait aspect-[4/5] w-full object-cover"
+                    decoding="async"
+                  />
+                </div>
+              </Reveal>
+            ) : null}
           </div>
         </section>
 
@@ -113,6 +133,9 @@ function Home() {
           </Reveal>
           <ProjectList projects={shown} />
         </section>
+
+        {/* Toolkit ticker */}
+        <ToolkitTicker items={toolkitItems} />
 
         {/* Philosophy */}
         <section className="rule-top">
@@ -141,38 +164,35 @@ function Home() {
             </Reveal>
             <div className="md:col-span-9">
               <Reveal>
-                <p className="type-h1 max-w-[30ch]">
-                  I&apos;m Khalid Usman, a product designer interested in making digital products
-                  clearer, more useful and more human.
-                </p>
+                <p className="type-h1 max-w-[30ch]">{settings["about_heading"]}</p>
               </Reveal>
               <Reveal delay={80} className="mt-10">
                 <RichText text={settings["about_paragraph"]} />
               </Reveal>
-
-              <div className="mt-16 grid gap-10 sm:grid-cols-2 md:mt-24">
-                {SKILLS.map((group, index) => (
-                  <Reveal key={group.label} delay={index * 80}>
-                    <h3 className="type-label border-t pt-6 text-muted-foreground">
-                      {group.label}
-                    </h3>
-                    <ul className="type-small mt-5 space-y-2">
-                      {group.items.map((item) => (
-                        <li key={item}>{item}</li>
-                      ))}
-                    </ul>
-                  </Reveal>
-                ))}
-              </div>
             </div>
           </div>
         </section>
+
+        {/* Experiments */}
+        {experiments.length ? (
+          <section id="experiments" className="rule-top scroll-mt-24">
+            <div className="shell py-24 md:py-40">
+              <Reveal className="mb-12 flex items-baseline justify-between md:mb-16">
+                <h2 className="type-h2">Experiments</h2>
+                <span className="type-label text-muted-foreground">
+                  {String(experiments.length).padStart(2, "0")}
+                </span>
+              </Reveal>
+              <ExperimentsList experiments={experiments} />
+            </div>
+          </section>
+        ) : null}
 
         {/* Contact */}
         <section id="contact" className="rule-top scroll-mt-24">
           <div className="shell py-24 md:py-40">
             <Reveal>
-              <h2 className="type-display max-w-[16ch]">Let&apos;s make something worth using.</h2>
+              <h2 className="type-display max-w-[16ch]">{settings["contact_heading"]}</h2>
             </Reveal>
             <div className="mt-12 grid gap-10 md:mt-20 md:grid-cols-12 md:items-end">
               <Reveal className="md:col-span-6">
@@ -187,9 +207,7 @@ function Home() {
                     </span>
                   </a>
                 ) : null}
-                {email ? (
-                  <p className="type-body mt-6 text-muted-foreground">{email}</p>
-                ) : null}
+                {email ? <p className="type-body mt-6 text-muted-foreground">{email}</p> : null}
               </Reveal>
               <Reveal delay={80} className="md:col-span-4 md:col-start-9">
                 <ul className="type-meta space-y-3">
@@ -248,7 +266,7 @@ function Home() {
         </section>
       </main>
 
-      <Footer settings={settings} />
+      <Footer navItems={navItems} settings={settings} />
     </>
   );
 }

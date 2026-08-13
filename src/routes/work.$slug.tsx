@@ -8,6 +8,7 @@ import { Reveal } from "@/components/site/Reveal";
 import { RichText } from "@/components/site/RichText";
 import {
   imageSrc,
+  navItemsQuery,
   projectQuery,
   projectsQuery,
   settingsQuery,
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/work/$slug")({
       context.queryClient.ensureQueryData(projectQuery(params.slug)),
       context.queryClient.ensureQueryData(projectsQuery),
       context.queryClient.ensureQueryData(settingsQuery),
+      context.queryClient.ensureQueryData(navItemsQuery),
     ]);
     if (!project || !project.published) throw notFound();
     return {
@@ -35,7 +37,8 @@ export const Route = createFileRoute("/work/$slug")({
       };
     }
     const title = `${loaderData.title} — Khalid Usman`;
-    const description = loaderData.description || `${loaderData.title}, a case study by Khalid Usman.`;
+    const description =
+      loaderData.description || `${loaderData.title}, a case study by Khalid Usman.`;
     return {
       meta: [
         { title },
@@ -115,6 +118,7 @@ function CaseStudy() {
   const { data: project } = useSuspenseQuery(projectQuery(slug));
   const { data: projects } = useSuspenseQuery(projectsQuery);
   const { data: loaded } = useSuspenseQuery(settingsQuery);
+  const { data: navItems } = useSuspenseQuery(navItemsQuery);
   const settings = { ...SETTINGS_FALLBACK, ...loaded };
 
   if (!project) return null;
@@ -125,7 +129,7 @@ function CaseStudy() {
 
   return (
     <>
-      <Nav resumeUrl={settings["resume_url"] || undefined} />
+      <Nav navItems={navItems} resumeUrl={settings["resume_url"] || undefined} />
 
       <main id="main">
         <header className="shell pt-32 pb-12 md:pt-48 md:pb-20">
@@ -233,7 +237,7 @@ function CaseStudy() {
         {next ? <NextProject project={next} /> : null}
       </main>
 
-      <Footer settings={settings} />
+      <Footer navItems={navItems} settings={settings} />
     </>
   );
 }

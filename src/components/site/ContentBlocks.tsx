@@ -16,8 +16,8 @@ export function Figure({
   priority = false,
 }: {
   image: GalleryImage;
-  className?: string;
-  priority?: boolean;
+  className?: string | undefined;
+  priority?: boolean | undefined;
 }) {
   const src = imageSrc(image.url);
   if (!src) return null;

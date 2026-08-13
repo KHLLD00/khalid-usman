@@ -235,7 +235,9 @@ export function GalleryEditor({
             <select
               value={image.aspect ?? "auto"}
               onChange={(event) =>
-                update(index, { aspect: event.target.value as GalleryImage["aspect"] })
+                update(index, {
+                  aspect: event.target.value as NonNullable<GalleryImage["aspect"]>,
+                })
               }
               className={inputClass}
             >

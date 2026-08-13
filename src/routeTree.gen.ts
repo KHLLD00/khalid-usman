@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as StudioRouteImport } from './routes/studio'
 import { Route as WorkSlugRouteImport } from './routes/work.$slug'
 import { Route as ApiPublicImageSplatRouteImport } from './routes/api/public/image/$'
 
@@ -22,6 +23,11 @@ const IndexRoute = IndexRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudioRoute = StudioRouteImport.update({
+  id: '/studio',
+  path: '/studio',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WorkSlugRoute = WorkSlugRouteImport.update({
@@ -38,12 +44,14 @@ const ApiPublicImageSplatRoute = ApiPublicImageSplatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/studio': typeof StudioRoute
   '/work/$slug': typeof WorkSlugRoute
   '/api/public/image/$': typeof ApiPublicImageSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/studio': typeof StudioRoute
   '/work/$slug': typeof WorkSlugRoute
   '/api/public/image/$': typeof ApiPublicImageSplatRoute
 }
@@ -51,20 +59,28 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/studio': typeof StudioRoute
   '/work/$slug': typeof WorkSlugRoute
   '/api/public/image/$': typeof ApiPublicImageSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/work/$slug' | '/api/public/image/$'
+  fullPaths: '/' | '/auth' | '/studio' | '/work/$slug' | '/api/public/image/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/work/$slug' | '/api/public/image/$'
-  id: '__root__' | '/' | '/auth' | '/work/$slug' | '/api/public/image/$'
+  to: '/' | '/auth' | '/studio' | '/work/$slug' | '/api/public/image/$'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/studio'
+    | '/work/$slug'
+    | '/api/public/image/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
+  StudioRoute: typeof StudioRoute
   WorkSlugRoute: typeof WorkSlugRoute
   ApiPublicImageSplatRoute: typeof ApiPublicImageSplatRoute
 }
@@ -83,6 +99,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/studio': {
+      id: '/studio'
+      path: '/studio'
+      fullPath: '/studio'
+      preLoaderRoute: typeof StudioRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/work/$slug': {
@@ -105,6 +128,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
+  StudioRoute: StudioRoute,
   WorkSlugRoute: WorkSlugRoute,
   ApiPublicImageSplatRoute: ApiPublicImageSplatRoute,
 }

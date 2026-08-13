@@ -282,6 +282,66 @@
   transition: transform 0.3s var(--ease-editorial);
 }
 
+/* Buttons ------------------------------------------------------------------ */
+
+@utility btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--color-foreground);
+  background-color: var(--color-foreground);
+  color: var(--color-background);
+  padding: 0.9rem 1.75rem;
+  font-size: 0.8125rem;
+  letter-spacing: 0.01em;
+  transition:
+    background-color 0.3s var(--ease-editorial),
+    color 0.3s var(--ease-editorial);
+
+  &:hover,
+  &:focus-visible {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+}
+
+/* Hero portrait -------------------------------------------------------------
+ * Monochrome by default so a personal photo sits inside the black-and-white
+ * system; project imagery elsewhere on the site keeps its original colours. */
+
+@utility hero-portrait {
+  filter: grayscale(1) contrast(1.05);
+}
+
+/* Toolkit ticker ------------------------------------------------------------
+ * Content, ordering, and visibility come from Studio (toolkit_items table).
+ * Speed, typography, and layout are fixed here in code. */
+
+@utility ticker-track {
+  display: flex;
+  width: max-content;
+  animation: ticker-scroll 32s linear infinite;
+
+  &:hover {
+    animation-play-state: paused;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track {
+    animation: none;
+  }
+}
+
+@keyframes ticker-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

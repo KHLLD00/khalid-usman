@@ -1,7 +1,15 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
+import { MediaLibrary } from "@/components/studio/MediaLibrary";
 import { imageSrc, type GalleryImage } from "@/lib/cms";
-import { uploadImage } from "@/lib/studio";
+import {
+  deleteImage,
+  isStoragePath,
+  uploadImage,
+  validateImageFile,
+  type MediaFolder,
+} from "@/lib/media";
+import { describeSupabaseError } from "@/lib/studio";
 
 export function Field({
   label,
@@ -99,53 +107,159 @@ export function ImagePicker({
   label,
   value,
   onChange,
+  folder = "blocks",
+  altValue,
+  onAltChange,
+  hint,
 }: {
   label: string;
   value: string | null;
   onChange: (value: string | null) => void;
+  folder?: MediaFolder;
+  altValue?: string;
+  onAltChange?: (value: string) => void;
+  hint?: string;
 }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [dragging, setDragging] = useState(false);
+  const [library, setLibrary] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
   const preview = imageSrc(value);
 
-  async function onFile(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    setBusy(true);
+  async function handleFile(file: File | undefined) {
+    if (!file || busy) return;
     setError(null);
+    const invalid = validateImageFile(file);
+    if (invalid) {
+      setError(invalid);
+      return;
+    }
+    setBusy(true);
     try {
-      onChange(await uploadImage(file));
+      const previous = value;
+      const path = await uploadImage(file, { folder });
+      onChange(path);
+      if (isStoragePath(previous)) await deleteImage(previous).catch(() => {});
     } catch (uploadError) {
-      setError(uploadError instanceof Error ? uploadError.message : "Upload failed");
+      setError(describeSupabaseError(uploadError));
+    } finally {
+      setBusy(false);
+      if (inputRef.current) inputRef.current.value = "";
+    }
+  }
+
+  async function remove() {
+    if (busy) return;
+    setError(null);
+    setBusy(true);
+    try {
+      await deleteImage(value);
+      onChange(null);
+    } catch (removeError) {
+      setError(describeSupabaseError(removeError));
     } finally {
       setBusy(false);
     }
   }
 
   return (
-    <div className="border p-4">
+    <div
+      className={`border p-4 transition-opacity ${dragging ? "border-foreground" : ""} ${busy ? "opacity-60" : ""}`}
+      onDragOver={(event) => {
+        event.preventDefault();
+        setDragging(true);
+      }}
+      onDragLeave={() => setDragging(false)}
+      onDrop={(event) => {
+        event.preventDefault();
+        setDragging(false);
+        void handleFile(event.dataTransfer.files?.[0]);
+      }}
+    >
       <span className="type-label text-muted-foreground">{label}</span>
+
       {preview ? (
         <img
           src={preview}
-          alt=""
+          alt={altValue ?? ""}
           className="mt-3 aspect-[16/10] w-full bg-secondary object-cover"
         />
-      ) : null}
+      ) : (
+        <div className="mt-3 flex aspect-[16/10] w-full items-center justify-center bg-secondary">
+          <span className="type-meta text-muted-foreground">
+            {busy ? "Uploading…" : "Drop an image here or upload below"}
+          </span>
+        </div>
+      )}
+
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        disabled={busy}
+        onChange={(event) => void handleFile(event.target.files?.[0])}
+        className="sr-only"
+      />
+
       <div className="mt-3 flex flex-wrap items-center gap-4">
-        <input type="file" accept="image/*" onChange={onFile} className="type-meta" />
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => inputRef.current?.click()}
+          className="type-meta link-underline disabled:opacity-50"
+        >
+          {value ? "Replace" : "Upload"}
+        </button>
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => setLibrary(true)}
+          className="type-meta link-underline disabled:opacity-50"
+        >
+          Choose existing
+        </button>
         {value ? (
           <button
             type="button"
-            onClick={() => onChange(null)}
-            className="type-meta link-underline text-muted-foreground"
+            disabled={busy}
+            onClick={() => void remove()}
+            className="type-meta link-underline text-muted-foreground disabled:opacity-50"
           >
             Remove
           </button>
         ) : null}
         {busy ? <span className="type-meta text-muted-foreground">Uploading…</span> : null}
       </div>
-      {error ? <p className="type-meta mt-2">{error}</p> : null}
+
+      {hint ? <p className="type-meta mt-2 text-muted-foreground">{hint}</p> : null}
+
+      {onAltChange ? (
+        <TextInput label="Alt text" value={altValue ?? ""} onChange={onAltChange} />
+      ) : null}
+
+      {error ? (
+        <p className="type-meta mt-2">
+          {error}{" "}
+          <button
+            type="button"
+            onClick={() => setError(null)}
+            className="link-underline text-muted-foreground"
+          >
+            Dismiss
+          </button>
+        </p>
+      ) : null}
+
+      {library ? (
+        <MediaLibrary
+          onClose={() => setLibrary(false)}
+          onSelect={(path) => {
+            onChange(path);
+            setLibrary(false);
+          }}
+        />
+      ) : null}
     </div>
   );
 }
@@ -154,10 +268,12 @@ export function GalleryEditor({
   label,
   images,
   onChange,
+  folder = "blocks",
 }: {
   label: string;
   images: GalleryImage[];
   onChange: (images: GalleryImage[]) => void;
+  folder?: MediaFolder;
 }) {
   function update(index: number, patch: Partial<GalleryImage>) {
     onChange(images.map((image, i) => (i === index ? { ...image, ...patch } : image)));
@@ -218,13 +334,11 @@ export function GalleryEditor({
 
           <ImagePicker
             label="Image"
+            folder={folder}
             value={image.url || null}
             onChange={(url) => update(index, { url: url ?? "" })}
-          />
-          <TextInput
-            label="Alt text"
-            value={image.alt ?? ""}
-            onChange={(alt) => update(index, { alt })}
+            altValue={image.alt ?? ""}
+            onAltChange={(alt) => update(index, { alt })}
           />
           <TextInput
             label="Caption"

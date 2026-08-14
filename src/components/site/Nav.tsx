@@ -76,8 +76,12 @@ export function Nav({
       </div>
 
       {open ? (
-        <div className="fixed inset-0 top-16 bg-background md:hidden">
-          <nav aria-label="Mobile" className="shell flex flex-col gap-8 pt-16">
+        <div
+          className="fixed inset-x-0 top-16 z-50 h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain bg-background md:hidden"
+          aria-modal="true"
+          role="dialog"
+        >
+          <nav aria-label="Mobile" className="shell flex flex-col gap-8 pb-16 pt-16">
             {links.map((link) => (
               <a key={link.id} href={link.url} className="type-h2" onClick={() => setOpen(false)}>
                 {link.label}

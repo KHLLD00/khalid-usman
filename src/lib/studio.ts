@@ -1,7 +1,15 @@
-import { supabase } from "@/integrations/supabase/client";
 import type { ContentBlock, GalleryImage, Project } from "@/lib/cms";
 
-export const BUCKET = "project-images";
+// All image handling lives in one place; re-exported for existing call sites.
+export {
+  BUCKET,
+  deleteImage,
+  isStoragePath,
+  listImages,
+  uploadImage,
+  validateImageFile,
+  type MediaFolder,
+} from "@/lib/media";
 
 type SupabaseLikeError = { message?: string; code?: string } | Error | unknown;
 
@@ -23,17 +31,6 @@ export function describeSupabaseError(error: SupabaseLikeError): string {
     return "Couldn't reach the server. Check your connection and try again.";
   }
   return message;
-}
-
-/** Uploads a file to the private portfolio bucket and returns its storage path. */
-export async function uploadImage(file: File): Promise<string> {
-  const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
-  const path = `${crypto.randomUUID()}.${ext}`;
-  const { error } = await supabase.storage
-    .from(BUCKET)
-    .upload(path, file, { cacheControl: "31536000", upsert: false, contentType: file.type });
-  if (error) throw error;
-  return path;
 }
 
 export function slugify(value: string): string {

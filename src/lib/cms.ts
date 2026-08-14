@@ -70,11 +70,11 @@ function normalise(row: Record<string, unknown>): Project {
   };
 }
 
-/** Storage paths are resolved through a public image route; absolute URLs pass through. */
+/** Storage paths resolve to public Supabase Storage URLs; absolute URLs pass through. */
 export function imageSrc(url?: string | null): string | undefined {
   if (!url) return undefined;
   if (/^(https?:)?\/\//.test(url) || url.startsWith("/")) return url;
-  return `/api/public/image/${url.split("/").map(encodeURIComponent).join("/")}`;
+  return supabase.storage.from("project-images").getPublicUrl(url).data.publicUrl;
 }
 
 export const projectsQuery = queryOptions({

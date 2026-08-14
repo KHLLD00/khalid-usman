@@ -63,16 +63,14 @@ function SettingsPanel({ settings }: { settings: SiteSettings }) {
             <div className="md:col-span-2">
               <ImagePicker
                 label="Hero image"
+                folder="hero"
                 value={draft["hero_image_url"] || null}
                 onChange={(value) => set("hero_image_url", value ?? "")}
+                altValue={draft["hero_image_alt"] ?? ""}
+                onAltChange={(value) => set("hero_image_alt", value)}
+                hint="Shown in a monochrome treatment; project imagery elsewhere keeps its own colour."
               />
             </div>
-            <TextInput
-              label="Hero image alt text"
-              value={draft["hero_image_alt"] ?? ""}
-              onChange={(value) => set("hero_image_alt", value)}
-              hint="Shown in a monochrome treatment; project imagery elsewhere keeps its own colour."
-            />
           </div>
         </div>
 

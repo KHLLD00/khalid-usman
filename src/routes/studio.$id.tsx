@@ -560,6 +560,7 @@ function ProjectEditor() {
         <div className="mt-8">
           <GalleryEditor
             label="Gallery images"
+            folder="projects"
             images={draft.gallery}
             onChange={(images) => set("gallery", images)}
           />

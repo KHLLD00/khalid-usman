@@ -173,13 +173,11 @@ function ExperimentsStudio() {
 
             <ImagePicker
               label="Image"
+              folder="experiments"
               value={item.image_url}
               onChange={(image_url) => update(index, { image_url })}
-            />
-            <TextInput
-              label="Image alt text"
-              value={item.image_alt}
-              onChange={(image_alt) => update(index, { image_alt })}
+              altValue={item.image_alt}
+              onAltChange={(image_alt) => update(index, { image_alt })}
             />
 
             <Toggle

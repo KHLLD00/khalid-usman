@@ -465,30 +465,29 @@ function ProjectEditor() {
       </div>
 
       <div className="mt-10 grid gap-6 md:grid-cols-2">
-        <div className="space-y-4">
-          <ImagePicker
-            label="Cover image"
-            value={draft.cover_image_url}
-            onChange={(value) => set("cover_image_url", value)}
-          />
-          <TextInput
-            label="Cover alt text"
-            value={draft.cover_image_alt}
-            onChange={(value) => set("cover_image_alt", value)}
-          />
-        </div>
-        <div className="space-y-4">
-          <ImagePicker
-            label="Hero image (case study)"
-            value={draft.hero_image_url}
-            onChange={(value) => set("hero_image_url", value)}
-          />
-          <TextInput
-            label="Hero alt text"
-            value={draft.hero_image_alt}
-            onChange={(value) => set("hero_image_alt", value)}
-          />
-        </div>
+        <ImagePicker
+          label="Cover image"
+          folder="projects"
+          value={draft.cover_image_url}
+          onChange={(value) => set("cover_image_url", value)}
+          altValue={draft.cover_image_alt}
+          onAltChange={(value) => set("cover_image_alt", value)}
+        />
+        <ImagePicker
+          label="Hero image (case study)"
+          folder="projects"
+          value={draft.hero_image_url}
+          onChange={(value) => set("hero_image_url", value)}
+          altValue={draft.hero_image_alt}
+          onAltChange={(value) => set("hero_image_alt", value)}
+        />
+        <ImagePicker
+          label="Thumbnail image"
+          folder="projects"
+          value={draft.thumbnail_url}
+          onChange={(value) => set("thumbnail_url", value)}
+          hint="Optional. Used in listings when no cover image is set."
+        />
       </div>
 
       <section className="mt-16 border-t pt-10">
@@ -561,6 +560,7 @@ function ProjectEditor() {
         <div className="mt-8">
           <GalleryEditor
             label="Gallery images"
+            folder="projects"
             images={draft.gallery}
             onChange={(images) => set("gallery", images)}
           />

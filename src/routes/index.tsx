@@ -114,7 +114,7 @@ function Home() {
                   <img
                     src={heroImage}
                     alt={settings["hero_image_alt"] || "Portrait of Khalid Usman"}
-                    className="hero-portrait aspect-[4/5] w-full object-cover"
+                    className="aspect-[4/5] w-full object-cover"
                     decoding="async"
                   />
                 </div>

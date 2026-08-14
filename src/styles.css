@@ -309,9 +309,7 @@
  * Monochrome by default so a personal photo sits inside the black-and-white
  * system; project imagery elsewhere on the site keeps its original colours. */
 
-@utility hero-portrait {
-  filter: grayscale(1) contrast(1.05);
-}
+/* Hero portrait shown at full colour; no filter utility needed here. */
 
 /* Toolkit ticker ------------------------------------------------------------
  * Content, ordering, and visibility come from Studio (toolkit_items table).

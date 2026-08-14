@@ -68,7 +68,7 @@ function SettingsPanel({ settings }: { settings: SiteSettings }) {
                 onChange={(value) => set("hero_image_url", value ?? "")}
                 altValue={draft["hero_image_alt"] ?? ""}
                 onAltChange={(value) => set("hero_image_alt", value)}
-                hint="Shown in a monochrome treatment; project imagery elsewhere keeps its own colour."
+                hint="Shown at full colour alongside your project imagery."
               />
             </div>
           </div>

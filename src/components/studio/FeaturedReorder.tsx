@@ -14,7 +14,7 @@ export function FeaturedReorder({ projects }: { projects: Project[] }) {
   const queryClient = useQueryClient();
 
   const featured = [...projects]
-    .filter((project) => project.featured)
+    .filter((project) => project.featured && project.project_type === "case-study")
     .sort((a, b) => a.sort_order - b.sort_order || a.title.localeCompare(b.title));
 
   const [order, setOrder] = useState<Project[]>(featured);

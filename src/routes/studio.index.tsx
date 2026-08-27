@@ -252,14 +252,19 @@ function StudioHome() {
                 {project.title || "Untitled"}
               </Link>
               <p className="type-meta mt-1 text-muted-foreground">
-                /work/{project.slug} · order {project.sort_order} ·{" "}
+                {project.project_type === "published-website" ? "Published Website" : "Case Study"}
+                {" · "}
+                {project.project_type === "published-website" ? "/websites/" : "/work/"}
+                {project.slug} · order {project.sort_order} ·{" "}
                 {project.published ? "Published" : "Draft"}
                 {project.featured ? " · Featured" : ""}
               </p>
             </div>
             <div className="flex items-center gap-6">
               <Link
-                to="/work/$slug"
+                to={
+                  project.project_type === "published-website" ? "/websites/$slug" : "/work/$slug"
+                }
                 params={{ slug: project.slug }}
                 className="type-meta link-underline text-muted-foreground"
               >

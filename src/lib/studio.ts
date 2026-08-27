@@ -88,6 +88,7 @@ export function emptyProject(): ProjectDraft {
   return {
     title: "",
     slug: "",
+    project_type: "case-study",
     short_description: "",
     category: "",
     year: String(new Date().getFullYear()),
@@ -97,6 +98,10 @@ export function emptyProject(): ProjectDraft {
     thumbnail_url: null,
     hero_image_url: null,
     hero_image_alt: "",
+    live_website_url: "",
+    live_preview_enabled: false,
+    preview_image_url: null,
+    live_status: "live",
     overview: "",
     problem: "",
     research: "",

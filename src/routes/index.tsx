@@ -5,6 +5,7 @@ import { ExperimentsList } from "@/components/site/ExperimentsList";
 import { Footer } from "@/components/site/Footer";
 import { Nav } from "@/components/site/Nav";
 import { ProjectList } from "@/components/site/ProjectList";
+import { PublishedWebsiteList } from "@/components/site/PublishedWebsiteList";
 import { Reveal } from "@/components/site/Reveal";
 import { RichText } from "@/components/site/RichText";
 import { ToolkitTicker } from "@/components/site/ToolkitTicker";
@@ -61,8 +62,12 @@ function Home() {
   const { data: toolkitItems } = useSuspenseQuery(toolkitItemsQuery);
   const { data: experiments } = useSuspenseQuery(experimentsQuery);
   const settings = { ...SETTINGS_FALLBACK, ...loaded };
-  const featured = projects.filter((project) => project.featured);
-  const shown = featured.length ? featured : projects;
+  const caseStudies = projects.filter((project) => project.project_type === "case-study");
+  const publishedWebsites = projects.filter(
+    (project) => project.project_type === "published-website",
+  );
+  const featured = caseStudies.filter((project) => project.featured);
+  const shown = featured.length ? featured : caseStudies;
   const email = settings["email"] ?? "";
   const heroImage = imageSrc(settings["hero_image_url"]);
 
@@ -133,6 +138,21 @@ function Home() {
           </Reveal>
           <ProjectList projects={shown} />
         </section>
+
+        {/* Published websites */}
+        {publishedWebsites.length ? (
+          <section id="websites" className="shell scroll-mt-24 pb-24 md:pb-40">
+            <Reveal className="mb-6 md:mb-8">
+              <h2 className="type-h2">Published Websites</h2>
+            </Reveal>
+            <Reveal delay={40} className="mb-12 md:mb-20">
+              <p className="type-body max-w-[46ch] text-muted-foreground">
+                Web experiences I've designed and brought to life.
+              </p>
+            </Reveal>
+            <PublishedWebsiteList projects={publishedWebsites} />
+          </section>
+        ) : null}
 
         {/* Toolkit ticker */}
         <ToolkitTicker items={toolkitItems} />

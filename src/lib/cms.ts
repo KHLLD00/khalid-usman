@@ -23,10 +23,14 @@ export type ContentBlock =
 
 export type ExternalLink = { label: string; url: string };
 
+export type ProjectType = "case-study" | "published-website";
+export type LiveStatus = "live" | "offline";
+
 export type Project = {
   id: string;
   title: string;
   slug: string;
+  project_type: ProjectType;
   short_description: string;
   category: string;
   year: string;
@@ -36,6 +40,10 @@ export type Project = {
   thumbnail_url: string | null;
   hero_image_url: string | null;
   hero_image_alt: string;
+  live_website_url: string;
+  live_preview_enabled: boolean;
+  preview_image_url: string | null;
+  live_status: LiveStatus;
   overview: string;
   problem: string;
   research: string;

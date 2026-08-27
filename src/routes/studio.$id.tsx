@@ -6,6 +6,7 @@ import {
   Field,
   GalleryEditor,
   ImagePicker,
+  Select,
   TextArea,
   TextInput,
   Toggle,
@@ -406,6 +407,16 @@ function ProjectEditor() {
       <h1 className="type-h2 mt-6">{isNew ? "New project" : draft.title || "Untitled"}</h1>
 
       <div className="mt-10 grid gap-6 md:grid-cols-2">
+        <Select
+          label="Project type"
+          value={draft.project_type}
+          onChange={(value) => set("project_type", value as ProjectDraft["project_type"])}
+          options={[
+            { value: "case-study", label: "Case Study" },
+            { value: "published-website", label: "Published Website" },
+          ]}
+          hint="Determines where this project appears and which fields it uses."
+        />
         <TextInput label="Title" value={draft.title} onChange={(value) => set("title", value)} />
         <TextInput
           label="Slug"
@@ -473,14 +484,16 @@ function ProjectEditor() {
           altValue={draft.cover_image_alt}
           onAltChange={(value) => set("cover_image_alt", value)}
         />
-        <ImagePicker
-          label="Hero image (case study)"
-          folder="projects"
-          value={draft.hero_image_url}
-          onChange={(value) => set("hero_image_url", value)}
-          altValue={draft.hero_image_alt}
-          onAltChange={(value) => set("hero_image_alt", value)}
-        />
+        {draft.project_type === "case-study" ? (
+          <ImagePicker
+            label="Hero image (case study)"
+            folder="projects"
+            value={draft.hero_image_url}
+            onChange={(value) => set("hero_image_url", value)}
+            altValue={draft.hero_image_alt}
+            onAltChange={(value) => set("hero_image_alt", value)}
+          />
+        ) : null}
         <ImagePicker
           label="Thumbnail image"
           folder="projects"
@@ -488,89 +501,131 @@ function ProjectEditor() {
           onChange={(value) => set("thumbnail_url", value)}
           hint="Optional. Used in listings when no cover image is set."
         />
+        {draft.project_type === "published-website" ? (
+          <ImagePicker
+            label="Preview image"
+            folder="projects"
+            value={draft.preview_image_url}
+            onChange={(value) => set("preview_image_url", value)}
+            hint="Fallback shown if the live site can't be embedded, and while the live preview loads."
+          />
+        ) : null}
       </div>
 
-      <section className="mt-16 border-t pt-10">
-        <h2 className="type-h3">Case study copy</h2>
-        <div className="mt-8 grid gap-6 md:grid-cols-2">
-          <TextArea
-            label="Overview"
-            value={draft.overview}
-            onChange={(value) => set("overview", value)}
-          />
-          <TextArea
-            label="Problem"
-            value={draft.problem}
-            onChange={(value) => set("problem", value)}
-          />
-          <TextArea
-            label="Research"
-            value={draft.research}
-            onChange={(value) => set("research", value)}
-          />
-          <TextArea
-            label="Insights"
-            value={draft.insights}
-            onChange={(value) => set("insights", value)}
-          />
-          <TextArea
-            label="Design process"
-            value={draft.design_process}
-            onChange={(value) => set("design_process", value)}
-          />
-          <TextArea
-            label="Design decisions"
-            value={draft.design_decisions}
-            onChange={(value) => set("design_decisions", value)}
-          />
-          <TextArea
-            label="Final solution"
-            value={draft.final_solution}
-            onChange={(value) => set("final_solution", value)}
-          />
-          <TextArea
-            label="Results / outcomes"
-            value={draft.results}
-            onChange={(value) => set("results", value)}
-          />
-          <TextArea
-            label="Reflection"
-            value={draft.reflection}
-            onChange={(value) => set("reflection", value)}
-          />
-          <TextArea
-            label="External links (one per line, Label | URL)"
-            value={draft.external_links.map((link) => `${link.label} | ${link.url}`).join("\n")}
-            onChange={(value) =>
-              set(
-                "external_links",
-                value
-                  .split("\n")
-                  .map((line) => line.split("|").map((part) => part.trim()))
-                  .filter((parts) => parts[0] || parts[1])
-                  .map((parts) => ({ label: parts[0] ?? "", url: parts[1] ?? "" })),
-              )
-            }
-          />
-        </div>
-      </section>
+      {draft.project_type === "case-study" ? (
+        <>
+          <section className="mt-16 border-t pt-10">
+            <h2 className="type-h3">Case study copy</h2>
+            <div className="mt-8 grid gap-6 md:grid-cols-2">
+              <TextArea
+                label="Overview"
+                value={draft.overview}
+                onChange={(value) => set("overview", value)}
+              />
+              <TextArea
+                label="Problem"
+                value={draft.problem}
+                onChange={(value) => set("problem", value)}
+              />
+              <TextArea
+                label="Research"
+                value={draft.research}
+                onChange={(value) => set("research", value)}
+              />
+              <TextArea
+                label="Insights"
+                value={draft.insights}
+                onChange={(value) => set("insights", value)}
+              />
+              <TextArea
+                label="Design process"
+                value={draft.design_process}
+                onChange={(value) => set("design_process", value)}
+              />
+              <TextArea
+                label="Design decisions"
+                value={draft.design_decisions}
+                onChange={(value) => set("design_decisions", value)}
+              />
+              <TextArea
+                label="Final solution"
+                value={draft.final_solution}
+                onChange={(value) => set("final_solution", value)}
+              />
+              <TextArea
+                label="Results / outcomes"
+                value={draft.results}
+                onChange={(value) => set("results", value)}
+              />
+              <TextArea
+                label="Reflection"
+                value={draft.reflection}
+                onChange={(value) => set("reflection", value)}
+              />
+              <TextArea
+                label="External links (one per line, Label | URL)"
+                value={draft.external_links.map((link) => `${link.label} | ${link.url}`).join("\n")}
+                onChange={(value) =>
+                  set(
+                    "external_links",
+                    value
+                      .split("\n")
+                      .map((line) => line.split("|").map((part) => part.trim()))
+                      .filter((parts) => parts[0] || parts[1])
+                      .map((parts) => ({ label: parts[0] ?? "", url: parts[1] ?? "" })),
+                  )
+                }
+              />
+            </div>
+          </section>
 
-      <section className="mt-16 border-t pt-10">
-        <h2 className="type-h3">Gallery</h2>
-        <div className="mt-8">
-          <GalleryEditor
-            label="Gallery images"
-            folder="projects"
-            images={draft.gallery}
-            onChange={(images) => set("gallery", images)}
-          />
-        </div>
-      </section>
+          <section className="mt-16 border-t pt-10">
+            <h2 className="type-h3">Gallery</h2>
+            <div className="mt-8">
+              <GalleryEditor
+                label="Gallery images"
+                folder="projects"
+                images={draft.gallery}
+                onChange={(images) => set("gallery", images)}
+              />
+            </div>
+          </section>
 
-      <BlockEditor
-        blocks={draft.content_blocks}
-        onChange={(blocks) => set("content_blocks", blocks)}
-      />
+          <BlockEditor
+            blocks={draft.content_blocks}
+            onChange={(blocks) => set("content_blocks", blocks)}
+          />
+        </>
+      ) : null}
+
+      {draft.project_type === "published-website" ? (
+        <section className="mt-16 border-t pt-10">
+          <h2 className="type-h3">Live website</h2>
+          <div className="mt-8 grid gap-6 md:grid-cols-2">
+            <TextInput
+              label="Live website URL"
+              value={draft.live_website_url}
+              onChange={(value) => set("live_website_url", value)}
+              placeholder="https://junk-box.netlify.app/"
+            />
+            <Select
+              label="Live status"
+              value={draft.live_status}
+              onChange={(value) => set("live_status", value as ProjectDraft["live_status"])}
+              options={[
+                { value: "live", label: "Live" },
+                { value: "offline", label: "Offline" },
+              ]}
+              hint="Set this manually — it isn't checked automatically."
+            />
+            <Toggle
+              label="Enable live preview (embed the site in an iframe)"
+              value={draft.live_preview_enabled}
+              onChange={(value) => set("live_preview_enabled", value)}
+            />
+          </div>
+        </section>
+      ) : null}
 
       <div className="sticky bottom-0 mt-16 flex items-center gap-6 border-t bg-background py-6">
         <button

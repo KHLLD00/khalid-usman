@@ -18,6 +18,7 @@ import { Route as StudioIdRouteImport } from './routes/studio.$id'
 import { Route as StudioExperimentsRouteImport } from './routes/studio.experiments'
 import { Route as StudioNavigationRouteImport } from './routes/studio.navigation'
 import { Route as StudioToolkitRouteImport } from './routes/studio.toolkit'
+import { Route as WebsitesSlugRouteImport } from './routes/websites.$slug'
 import { Route as WorkSlugRouteImport } from './routes/work.$slug'
 import { Route as ApiPublicImageSplatRouteImport } from './routes/api/public/image/$'
 
@@ -66,6 +67,11 @@ const StudioToolkitRoute = StudioToolkitRouteImport.update({
   path: '/toolkit',
   getParentRoute: () => StudioRoute,
 } as any)
+const WebsitesSlugRoute = WebsitesSlugRouteImport.update({
+  id: '/websites/$slug',
+  path: '/websites/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WorkSlugRoute = WorkSlugRouteImport.update({
   id: '/work/$slug',
   path: '/work/$slug',
@@ -86,6 +92,7 @@ export interface FileRoutesByFullPath {
   '/studio/experiments': typeof StudioExperimentsRoute
   '/studio/navigation': typeof StudioNavigationRoute
   '/studio/toolkit': typeof StudioToolkitRoute
+  '/websites/$slug': typeof WebsitesSlugRoute
   '/work/$slug': typeof WorkSlugRoute
   '/studio/': typeof StudioIndexRoute
   '/api/public/image/$': typeof ApiPublicImageSplatRoute
@@ -98,6 +105,7 @@ export interface FileRoutesByTo {
   '/studio/experiments': typeof StudioExperimentsRoute
   '/studio/navigation': typeof StudioNavigationRoute
   '/studio/toolkit': typeof StudioToolkitRoute
+  '/websites/$slug': typeof WebsitesSlugRoute
   '/work/$slug': typeof WorkSlugRoute
   '/studio': typeof StudioIndexRoute
   '/api/public/image/$': typeof ApiPublicImageSplatRoute
@@ -112,6 +120,7 @@ export interface FileRoutesById {
   '/studio/experiments': typeof StudioExperimentsRoute
   '/studio/navigation': typeof StudioNavigationRoute
   '/studio/toolkit': typeof StudioToolkitRoute
+  '/websites/$slug': typeof WebsitesSlugRoute
   '/work/$slug': typeof WorkSlugRoute
   '/studio/': typeof StudioIndexRoute
   '/api/public/image/$': typeof ApiPublicImageSplatRoute
@@ -127,6 +136,7 @@ export interface FileRouteTypes {
     | '/studio/experiments'
     | '/studio/navigation'
     | '/studio/toolkit'
+    | '/websites/$slug'
     | '/work/$slug'
     | '/studio/'
     | '/api/public/image/$'
@@ -139,6 +149,7 @@ export interface FileRouteTypes {
     | '/studio/experiments'
     | '/studio/navigation'
     | '/studio/toolkit'
+    | '/websites/$slug'
     | '/work/$slug'
     | '/studio'
     | '/api/public/image/$'
@@ -152,6 +163,7 @@ export interface FileRouteTypes {
     | '/studio/experiments'
     | '/studio/navigation'
     | '/studio/toolkit'
+    | '/websites/$slug'
     | '/work/$slug'
     | '/studio/'
     | '/api/public/image/$'
@@ -162,6 +174,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StudioRoute: typeof StudioRouteWithChildren
+  WebsitesSlugRoute: typeof WebsitesSlugRoute
   WorkSlugRoute: typeof WorkSlugRoute
   ApiPublicImageSplatRoute: typeof ApiPublicImageSplatRoute
 }
@@ -231,6 +244,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudioToolkitRouteImport
       parentRoute: typeof StudioRoute
     }
+    '/websites/$slug': {
+      id: '/websites/$slug'
+      path: '/websites/$slug'
+      fullPath: '/websites/$slug'
+      preLoaderRoute: typeof WebsitesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/work/$slug': {
       id: '/work/$slug'
       path: '/work/$slug'
@@ -272,6 +292,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StudioRoute: StudioRouteWithChildren,
+  WebsitesSlugRoute: WebsitesSlugRoute,
   WorkSlugRoute: WorkSlugRoute,
   ApiPublicImageSplatRoute: ApiPublicImageSplatRoute,
 }

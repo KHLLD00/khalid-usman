@@ -67,6 +67,8 @@ const PROJECT_COLUMNS = "*";
 function normalise(row: Record<string, unknown>): Project {
   return {
     ...(row as unknown as Project),
+    project_type: row["project_type"] === "published-website" ? "published-website" : "case-study",
+    live_status: row["live_status"] === "offline" ? "offline" : "live",
     tools: Array.isArray(row["tools"]) ? (row["tools"] as string[]) : [],
     external_links: Array.isArray(row["external_links"])
       ? (row["external_links"] as ExternalLink[])

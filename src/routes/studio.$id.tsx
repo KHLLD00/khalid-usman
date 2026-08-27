@@ -354,7 +354,14 @@ function ProjectEditor() {
   });
 
   useEffect(() => {
-    if (existing.data) setDraft(existing.data as unknown as ProjectDraft);
+    if (existing.data) {
+      const row = existing.data as unknown as { project_type?: string; live_status?: string };
+      setDraft({
+        ...(existing.data as unknown as ProjectDraft),
+        project_type: row.project_type === "published-website" ? "published-website" : "case-study",
+        live_status: row.live_status === "offline" ? "offline" : "live",
+      });
+    }
   }, [existing.data]);
 
   function set<K extends keyof ProjectDraft>(key: K, value: ProjectDraft[K]) {

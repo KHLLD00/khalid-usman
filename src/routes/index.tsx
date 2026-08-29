@@ -80,15 +80,15 @@ function Home() {
         <section className="shell pt-40 pb-24 md:pt-56 md:pb-40">
           <div className="grid gap-16 md:grid-cols-12 md:items-center">
             <div className={heroImage ? "md:col-span-7" : "md:col-span-12"}>
-              <Reveal>
+              <Reveal immediate>
                 <p className="type-label text-muted-foreground">{settings["hero_eyebrow"]}</p>
               </Reveal>
-              <Reveal delay={80}>
+              <Reveal immediate>
                 <h1 className="type-display mt-8 max-w-[18ch] md:mt-12">
                   {settings["hero_headline"]}
                 </h1>
               </Reveal>
-              <Reveal delay={140} className="mt-10 md:mt-16">
+              <Reveal immediate className="mt-10 md:mt-16">
                 <p className="type-body max-w-[44ch] text-muted-foreground">
                   {settings["hero_description"]}
                 </p>
@@ -114,7 +114,7 @@ function Home() {
             </div>
 
             {heroImage ? (
-              <Reveal delay={100} className="md:col-span-5">
+              <Reveal immediate className="md:col-span-5">
                 <div className="overflow-hidden bg-secondary">
                   <img
                     src={heroImage}

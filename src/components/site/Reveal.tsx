@@ -7,14 +7,24 @@ type RevealProps = {
   className?: string;
   as?: ElementType;
   delay?: number;
+  /** Skip the hide-then-fade behaviour entirely — for above-the-fold content
+   * that's visible on arrival and has nothing to be "revealed" from. */
+  immediate?: boolean;
 };
 
 /** Gentle scroll-in reveal. Honours prefers-reduced-motion via CSS. */
-export function Reveal({ children, className, as: Tag = "div", delay = 0 }: RevealProps) {
+export function Reveal({
+  children,
+  className,
+  as: Tag = "div",
+  delay = 0,
+  immediate = false,
+}: RevealProps) {
   const ref = useRef<HTMLElement | null>(null);
-  const [shown, setShown] = useState(false);
+  const [shown, setShown] = useState(immediate);
 
   useEffect(() => {
+    if (immediate) return;
     const node = ref.current;
     if (!node) return;
     if (typeof IntersectionObserver === "undefined") {
@@ -33,14 +43,20 @@ export function Reveal({ children, className, as: Tag = "div", delay = 0 }: Reve
       { rootMargin: "0px 0px -12% 0px", threshold: 0.05 },
     );
     observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
+    // Safety net: guarantee real content is never left invisible indefinitely
+    // if hydration is slow or the observer never fires for some reason.
+    const timeout = window.setTimeout(() => setShown(true), 400);
+    return () => {
+      observer.disconnect();
+      window.clearTimeout(timeout);
+    };
+  }, [immediate]);
 
   return (
     <Tag
       ref={ref}
-      className={cn("reveal", shown && "reveal-in", className)}
-      style={delay ? { transitionDelay: `${delay}ms` } : undefined}
+      className={cn(!immediate && "reveal", !immediate && shown && "reveal-in", className)}
+      style={delay && !immediate ? { transitionDelay: `${delay}ms` } : undefined}
     >
       {children}
     </Tag>

@@ -353,6 +353,35 @@
   animation-timing-function: var(--ease-editorial);
 }
 
+/* Global loading indicator ---------------------------------------------
+ * Three bars echoing the site's editorial rule-lines, animating in a
+ * staggered wave rather than a generic spinner. */
+
+.loader-mark {
+  display: flex;
+  gap: 6px;
+}
+
+.loader-mark span {
+  display: block;
+  width: 3px;
+  height: 22px;
+  background-color: var(--foreground);
+  animation: loader-wave 0.9s var(--ease-editorial) infinite;
+}
+
+@keyframes loader-wave {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

@@ -91,8 +91,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Product designer focused on creating thoughtful digital experiences, interfaces and products.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "https://khalid-usman.vercel.app/og-image.jpg" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "800" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:creator", content: "@KAY_UIUX" },
+      { name: "twitter:image", content: "https://khalid-usman.vercel.app/og-image.jpg" },
     ],
     links: [
       {
@@ -100,6 +104,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
     ],
   }),
   shellComponent: RootShell,

@@ -267,6 +267,11 @@ export const SETTINGS_FALLBACK: SiteSettings = {
   about_heading:
     "I'm Khalid Usman, a product designer interested in making digital products clearer, more useful and more human.",
   contact_heading: "Let's make something worth using.",
+  availability_label: "",
+  availability_open: "false",
+  whatsapp_url: "",
+  response_time_note: "",
+  contact_skills: "",
   footer_headline: "Let's make something worth using.",
   footer_description: "",
 };

@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
+import { CopyButton } from "@/components/site/CopyButton";
 import { ExperimentsList } from "@/components/site/ExperimentsList";
 import { Footer } from "@/components/site/Footer";
 import { Nav } from "@/components/site/Nav";
@@ -18,6 +19,7 @@ import {
   SETTINGS_FALLBACK,
   toolkitItemsQuery,
 } from "@/lib/cms";
+import { cn } from "@/lib/utils";
 
 const TITLE = "Khalid Usman — Product Designer";
 const DESCRIPTION =
@@ -69,6 +71,13 @@ function Home() {
   const featured = caseStudies.filter((project) => project.featured);
   const shown = featured.length ? featured : caseStudies;
   const email = settings["email"] ?? "";
+  const whatsappUrl = settings["whatsapp_url"] ?? "";
+  const availabilityLabel = settings["availability_label"] ?? "";
+  const availabilityOpen = settings["availability_open"] === "true";
+  const skills = (settings["contact_skills"] ?? "")
+    .split(",")
+    .map((skill) => skill.trim())
+    .filter(Boolean);
   const heroImage = imageSrc(settings["hero_image_url"]);
 
   return (
@@ -214,20 +223,63 @@ function Home() {
             <Reveal>
               <h2 className="type-display max-w-[16ch]">{settings["contact_heading"]}</h2>
             </Reveal>
+
+            {availabilityLabel || skills.length ? (
+              <Reveal delay={40} className="mt-8 flex flex-wrap items-center gap-3">
+                {availabilityLabel ? (
+                  <span className="type-meta inline-flex items-center gap-2 border px-3 py-1.5">
+                    <span
+                      className={cn(
+                        "size-1.5 rounded-full",
+                        availabilityOpen ? "bg-emerald-500" : "bg-muted-foreground",
+                      )}
+                    />
+                    {availabilityLabel}
+                  </span>
+                ) : null}
+                {skills.map((skill) => (
+                  <span key={skill} className="type-meta border px-3 py-1.5 text-muted-foreground">
+                    {skill}
+                  </span>
+                ))}
+              </Reveal>
+            ) : null}
+
             <div className="mt-12 grid gap-10 md:mt-20 md:grid-cols-12 md:items-end">
-              <Reveal className="md:col-span-6">
+              <Reveal className="md:col-span-7">
                 {email ? (
+                  <>
+                    <p className="type-meta text-muted-foreground">Get in touch</p>
+                    <div className="mt-4 flex flex-wrap items-center gap-4">
+                      <a
+                        href={`mailto:${email}`}
+                        className="group type-h1 inline-flex items-center gap-3 break-all"
+                      >
+                        <span className="link-underline">{email}</span>
+                        <span className="arrow-shift shrink-0 group-hover:translate-x-1 group-hover:-translate-y-1">
+                          ↗
+                        </span>
+                      </a>
+                      <CopyButton value={email} label="Copy email" />
+                    </div>
+                  </>
+                ) : null}
+                {whatsappUrl ? (
                   <a
-                    href={`mailto:${email}`}
-                    className="group type-h3 inline-flex items-center gap-3"
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={cn(
+                      "group type-h3 inline-flex items-center gap-3",
+                      email ? "mt-8" : "",
+                    )}
                   >
-                    <span className="link-underline">Get in touch</span>
+                    <span className="link-underline">Message on WhatsApp</span>
                     <span className="arrow-shift group-hover:translate-x-1 group-hover:-translate-y-1">
                       ↗
                     </span>
                   </a>
                 ) : null}
-                {email ? <p className="type-body mt-6 text-muted-foreground">{email}</p> : null}
               </Reveal>
               <Reveal delay={80} className="md:col-span-4 md:col-start-9">
                 <ul className="type-meta space-y-3">
@@ -280,6 +332,11 @@ function Home() {
                     </li>
                   ) : null}
                 </ul>
+                {settings["response_time_note"] ? (
+                  <p className="type-meta mt-6 text-muted-foreground">
+                    {settings["response_time_note"]}
+                  </p>
+                ) : null}
               </Reveal>
             </div>
           </div>

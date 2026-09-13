@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { FeaturedReorder } from "@/components/studio/FeaturedReorder";
-import { ImagePicker, TextArea, TextInput } from "@/components/studio/Fields";
+import { ImagePicker, TextArea, TextInput, Toggle } from "@/components/studio/Fields";
 import { supabase } from "@/integrations/supabase/client";
 import { allProjectsQuery, settingsQuery, type SiteSettings } from "@/lib/cms";
 import { describeSupabaseError } from "@/lib/studio";
@@ -147,12 +147,51 @@ function SettingsPanel({ settings }: { settings: SiteSettings }) {
         </div>
 
         <div>
+          <h3 className="type-label text-muted-foreground">Availability</h3>
+          <div className="mt-4 grid gap-6 md:grid-cols-2">
+            <TextInput
+              label="Availability label"
+              value={draft["availability_label"] ?? ""}
+              onChange={(value) => set("availability_label", value)}
+              placeholder="Available for new projects"
+              hint="Leave blank to hide the availability badge entirely."
+            />
+            <div className="flex items-end pb-2">
+              <Toggle
+                label="Open for work (controls the status dot colour)"
+                value={draft["availability_open"] === "true"}
+                onChange={(value) => set("availability_open", value ? "true" : "false")}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div>
           <h3 className="type-label text-muted-foreground">Contact &amp; social links</h3>
           <div className="mt-4 grid gap-6 md:grid-cols-2">
             <TextInput
               label="Email"
               value={draft["email"] ?? ""}
               onChange={(value) => set("email", value)}
+            />
+            <TextInput
+              label="WhatsApp link"
+              value={draft["whatsapp_url"] ?? ""}
+              onChange={(value) => set("whatsapp_url", value)}
+              placeholder="https://wa.me/234..."
+            />
+            <TextInput
+              label="Response time note"
+              value={draft["response_time_note"] ?? ""}
+              onChange={(value) => set("response_time_note", value)}
+              placeholder="Usually replies within 24 hours"
+            />
+            <TextInput
+              label="Skills / focus areas"
+              value={draft["contact_skills"] ?? ""}
+              onChange={(value) => set("contact_skills", value)}
+              placeholder="Product Design, Landing Pages, Dashboards"
+              hint="Comma-separated — shown as tags above the contact links."
             />
             <TextInput
               label="LinkedIn URL"

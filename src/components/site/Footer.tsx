@@ -114,7 +114,8 @@ export function Footer({
         </nav>
 
         <p className="type-meta text-muted-foreground md:col-span-3 md:text-right">
-          © {year} Khalid Usman
+          <span>© {year} Khalid Usman</span>
+          <span className="mt-2 block">Powered by <a href="https://kaytechwebsolutions.vercel.app" target="_blank" rel="noreferrer" className="link-underline">Kaytech Web Solutions</a></span>
         </p>
       </div>
     </footer>

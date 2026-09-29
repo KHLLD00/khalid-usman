@@ -124,12 +124,32 @@ export function Nav({
 
           <button
             type="button"
-            className="type-label md:hidden"
+            className="-mr-2.5 flex size-11 items-center justify-center md:hidden"
+            aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             aria-controls="mobile-menu"
             onClick={() => setOpen((value) => !value)}
           >
-            {open ? "Close" : "Menu"}
+            <span aria-hidden className="relative block h-3.5 w-6">
+              <span
+                className={cn(
+                  "absolute inset-x-0 h-[1.5px] bg-foreground transition-[top,transform] duration-500 ease-editorial",
+                  open ? "top-[6.25px] rotate-45" : "top-0",
+                )}
+              />
+              <span
+                className={cn(
+                  "absolute inset-x-0 top-[6.25px] h-[1.5px] bg-foreground transition-opacity duration-300",
+                  open && "opacity-0",
+                )}
+              />
+              <span
+                className={cn(
+                  "absolute inset-x-0 h-[1.5px] bg-foreground transition-[top,transform] duration-500 ease-editorial",
+                  open ? "top-[6.25px] -rotate-45" : "top-[12.5px]",
+                )}
+              />
+            </span>
           </button>
         </div>
       </header>

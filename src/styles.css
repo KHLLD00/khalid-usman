@@ -403,6 +403,17 @@ body {
   content: "p. " counter(page, decimal-leading-zero);
 }
 
+/* Case study section numbers, in the order the sections appear. */
+
+.case-sections {
+  counter-reset: section;
+}
+
+.section-no::before {
+  counter-increment: section;
+  content: counter(section, decimal-leading-zero);
+}
+
 /* Hero entrance ------------------------------------------------------------ */
 
 .hero-in {

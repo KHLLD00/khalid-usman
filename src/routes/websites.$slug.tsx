@@ -4,6 +4,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Footer } from "@/components/site/Footer";
 import { LivePreview } from "@/components/site/LivePreview";
 import { Nav } from "@/components/site/Nav";
+import { ProjectHeader, type MetaRow } from "@/components/site/ProjectHeader";
 import { Reveal } from "@/components/site/Reveal";
 import {
   navItemsQuery,
@@ -33,10 +34,10 @@ export const Route = createFileRoute("/websites/$slug")({
   head: ({ loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [{ title: "Unavailable — Khalid Usman" }, { name: "robots", content: "noindex" }],
+        meta: [{ title: "Unavailable | Khalid Usman" }, { name: "robots", content: "noindex" }],
       };
     }
-    const title = `${loaderData.title} — Khalid Usman`;
+    const title = `${loaderData.title} | Khalid Usman`;
     const description =
       loaderData.description || `${loaderData.title}, a website designed by Khalid Usman.`;
     return {
@@ -59,7 +60,7 @@ function NextWebsite({ project }: { project: Project }) {
       <div className="shell py-20 md:py-32">
         <Link to="/websites/$slug" params={{ slug: project.slug }} className="group block">
           <p className="type-label text-muted-foreground">Next website</p>
-          <h2 className="type-h1 mt-8 transition-transform duration-500 ease-editorial group-hover:translate-x-1">
+          <h2 className="type-h1 mt-8 transition-[color,transform] duration-500 ease-editorial group-hover:translate-x-1 group-hover:text-cobalt">
             {project.title}
           </h2>
           <p className="type-meta mt-4 inline-flex items-center gap-2 text-muted-foreground">
@@ -88,72 +89,48 @@ function WebsiteDetail() {
   const index = websites.findIndex((item) => item.id === project.id);
   const next = websites.length > 1 ? websites[(index + 1) % websites.length] : undefined;
 
+  const meta: MetaRow[] = [
+    ...(project.role ? [{ label: "Role", value: project.role }] : []),
+    ...(project.year ? [{ label: "Year", value: project.year }] : []),
+    ...(project.tools.length ? [{ label: "Tools", value: project.tools.join(", ") }] : []),
+  ];
+
   return (
     <>
       <Nav navItems={navItems} settings={settings} />
 
       <main id="main">
-        <header className="shell pt-32 pb-12 md:pt-48 md:pb-20">
-          <Reveal>
-            <p className="type-label text-muted-foreground">
-              <Link to="/" hash="websites" className="link-underline">
-                Published Websites
-              </Link>
-              <span className="mx-3">/</span>
-              {project.category || "Website"}
-            </p>
-          </Reveal>
-          <Reveal delay={60}>
-            <h1 className="type-display mt-8 max-w-[18ch] md:mt-12">{project.title}</h1>
-          </Reveal>
-          <div className="mt-12 grid gap-10 md:mt-20 md:grid-cols-12">
-            <Reveal className="md:col-span-5">
-              <p className="type-body max-w-[44ch] text-muted-foreground">
-                {project.short_description}
-              </p>
-            </Reveal>
-            <Reveal delay={80} className="md:col-span-4 md:col-start-9">
-              <dl className="type-meta grid grid-cols-2 gap-y-4 md:grid-cols-1">
-                {project.role ? (
-                  <div className="border-t pt-3">
-                    <dt className="text-muted-foreground">Role</dt>
-                    <dd className="mt-1">{project.role}</dd>
-                  </div>
-                ) : null}
-                {project.year ? (
-                  <div className="border-t pt-3">
-                    <dt className="text-muted-foreground">Year</dt>
-                    <dd className="mt-1">{project.year}</dd>
-                  </div>
-                ) : null}
-                {project.tools.length ? (
-                  <div className="col-span-2 border-t pt-3 md:col-span-1">
-                    <dt className="text-muted-foreground">Tools</dt>
-                    <dd className="mt-1">{project.tools.join(", ")}</dd>
-                  </div>
-                ) : null}
-                {project.live_website_url ? (
-                  <div className="col-span-2 border-t pt-3 md:col-span-1">
-                    <dt className="text-muted-foreground">Website</dt>
-                    <dd className="mt-1">
-                      <a
-                        href={project.live_website_url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="link-underline"
-                      >
-                        Visit site ↗
-                      </a>
-                    </dd>
-                  </div>
-                ) : null}
-              </dl>
-            </Reveal>
-          </div>
-        </header>
+        <ProjectHeader
+          crumb={
+            <Link to="/work" search={{ type: "websites" }} className="link-underline">
+              {settings["websites_heading"]}
+            </Link>
+          }
+          category={project.category || "Website"}
+          title={project.title}
+          description={project.short_description}
+          cta={
+            project.live_website_url ? (
+              <a
+                href={project.live_website_url}
+                target="_blank"
+                rel="noreferrer"
+                className="group type-meta inline-flex items-center gap-2"
+              >
+                <span className="link-underline">Visit site</span>
+                <span className="arrow-shift group-hover:translate-x-1 group-hover:-translate-y-1">
+                  ↗
+                </span>
+              </a>
+            ) : null
+          }
+          meta={meta}
+        />
 
-        <Reveal as="div" className="shell">
-          <LivePreview project={project} className="aspect-[16/10]" />
+        <Reveal as="div" className="shell pb-20 md:pb-32">
+          <div className="sheet-media">
+            <LivePreview project={project} className="aspect-[16/10]" />
+          </div>
         </Reveal>
 
         {next ? <NextWebsite project={next} /> : null}

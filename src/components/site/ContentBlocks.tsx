@@ -14,17 +14,19 @@ export function Figure({
   image,
   className,
   priority = false,
+  flush = false,
 }: {
   image: GalleryImage;
   className?: string | undefined;
   priority?: boolean | undefined;
+  flush?: boolean | undefined;
 }) {
   const src = imageSrc(image.url);
   if (!src) return null;
 
   return (
     <figure className={className}>
-      <div className="overflow-hidden bg-secondary">
+      <div className={cn("overflow-hidden bg-secondary", !flush && "border bg-card p-1.5 md:p-2")}>
         <img
           src={src}
           alt={image.alt ?? ""}
@@ -64,9 +66,11 @@ function Block({ block }: { block: ContentBlock }) {
       return (
         <Reveal as="section" className="shell">
           <blockquote className="md:grid md:grid-cols-12">
-            <p className="type-serif type-h2 md:col-span-9 md:col-start-3">{block.text}</p>
+            <p className="type-serif type-h2 border-l-2 border-cobalt pl-6 md:col-span-9 md:col-start-3">
+              {block.text}
+            </p>
             {block.attribution ? (
-              <footer className="type-meta mt-6 text-muted-foreground md:col-span-9 md:col-start-3">
+              <footer className="type-meta mt-6 pl-6 text-muted-foreground md:col-span-9 md:col-start-3">
                 {block.attribution}
               </footer>
             ) : null}
@@ -78,7 +82,7 @@ function Block({ block }: { block: ContentBlock }) {
       if (block.width === "full") {
         return (
           <Reveal as="section">
-            <Figure image={block.image} />
+            <Figure image={block.image} flush />
           </Reveal>
         );
       }
@@ -124,7 +128,7 @@ function Block({ block }: { block: ContentBlock }) {
         <Reveal as="section" className="shell">
           <div className="grid gap-8 md:grid-cols-12 md:items-center md:gap-16">
             <div className="md:col-span-5">
-              {block.heading ? <h3 className="type-h3 mb-4">{block.heading}</h3> : null}
+              {block.heading ? <h3 className="type-serif mb-4 text-2xl">{block.heading}</h3> : null}
               <RichText text={block.text} />
             </div>
             <Figure image={block.image} className="md:col-span-7" />
@@ -174,11 +178,11 @@ function Block({ block }: { block: ContentBlock }) {
         <Reveal as="section" className="shell">
           <ol className="grid gap-px bg-border sm:grid-cols-2 md:grid-cols-4">
             {block.items.map((item, index) => (
-              <li key={index} className="bg-background p-6">
+              <li key={index} className="bg-card p-6">
                 <span className="type-label text-muted-foreground">
                   {String(index + 1).padStart(2, "0")}
                 </span>
-                <h3 className="type-h3 mt-4">{item.label}</h3>
+                <h3 className="type-serif mt-4 text-2xl">{item.label}</h3>
                 {item.description ? (
                   <p className="type-small mt-2 text-muted-foreground">{item.description}</p>
                 ) : null}

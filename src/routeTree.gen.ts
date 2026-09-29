@@ -19,6 +19,7 @@ import { Route as StudioExperimentsRouteImport } from './routes/studio.experimen
 import { Route as StudioNavigationRouteImport } from './routes/studio.navigation'
 import { Route as StudioToolkitRouteImport } from './routes/studio.toolkit'
 import { Route as WebsitesSlugRouteImport } from './routes/websites.$slug'
+import { Route as WorkIndexRouteImport } from './routes/work.index'
 import { Route as WorkSlugRouteImport } from './routes/work.$slug'
 import { Route as ApiPublicImageSplatRouteImport } from './routes/api/public/image/$'
 
@@ -72,6 +73,11 @@ const WebsitesSlugRoute = WebsitesSlugRouteImport.update({
   path: '/websites/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WorkIndexRoute = WorkIndexRouteImport.update({
+  id: '/work/',
+  path: '/work/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WorkSlugRoute = WorkSlugRouteImport.update({
   id: '/work/$slug',
   path: '/work/$slug',
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/websites/$slug': typeof WebsitesSlugRoute
   '/work/$slug': typeof WorkSlugRoute
   '/studio/': typeof StudioIndexRoute
+  '/work/': typeof WorkIndexRoute
   '/api/public/image/$': typeof ApiPublicImageSplatRoute
 }
 export interface FileRoutesByTo {
@@ -108,6 +115,7 @@ export interface FileRoutesByTo {
   '/websites/$slug': typeof WebsitesSlugRoute
   '/work/$slug': typeof WorkSlugRoute
   '/studio': typeof StudioIndexRoute
+  '/work': typeof WorkIndexRoute
   '/api/public/image/$': typeof ApiPublicImageSplatRoute
 }
 export interface FileRoutesById {
@@ -123,6 +131,7 @@ export interface FileRoutesById {
   '/websites/$slug': typeof WebsitesSlugRoute
   '/work/$slug': typeof WorkSlugRoute
   '/studio/': typeof StudioIndexRoute
+  '/work/': typeof WorkIndexRoute
   '/api/public/image/$': typeof ApiPublicImageSplatRoute
 }
 export interface FileRouteTypes {
@@ -139,6 +148,7 @@ export interface FileRouteTypes {
     | '/websites/$slug'
     | '/work/$slug'
     | '/studio/'
+    | '/work/'
     | '/api/public/image/$'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -152,6 +162,7 @@ export interface FileRouteTypes {
     | '/websites/$slug'
     | '/work/$slug'
     | '/studio'
+    | '/work'
     | '/api/public/image/$'
   id:
     | '__root__'
@@ -166,6 +177,7 @@ export interface FileRouteTypes {
     | '/websites/$slug'
     | '/work/$slug'
     | '/studio/'
+    | '/work/'
     | '/api/public/image/$'
   fileRoutesById: FileRoutesById
 }
@@ -176,6 +188,7 @@ export interface RootRouteChildren {
   StudioRoute: typeof StudioRouteWithChildren
   WebsitesSlugRoute: typeof WebsitesSlugRoute
   WorkSlugRoute: typeof WorkSlugRoute
+  WorkIndexRoute: typeof WorkIndexRoute
   ApiPublicImageSplatRoute: typeof ApiPublicImageSplatRoute
 }
 
@@ -251,6 +264,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WebsitesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/work/': {
+      id: '/work/'
+      path: '/work'
+      fullPath: '/work/'
+      preLoaderRoute: typeof WorkIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/work/$slug': {
       id: '/work/$slug'
       path: '/work/$slug'
@@ -294,6 +314,7 @@ const rootRouteChildren: RootRouteChildren = {
   StudioRoute: StudioRouteWithChildren,
   WebsitesSlugRoute: WebsitesSlugRoute,
   WorkSlugRoute: WorkSlugRoute,
+  WorkIndexRoute: WorkIndexRoute,
   ApiPublicImageSplatRoute: ApiPublicImageSplatRoute,
 }
 export const routeTree = rootRouteImport

@@ -8,7 +8,7 @@ function ExperimentCard({ experiment, index }: { experiment: Experiment; index: 
   const content = (
     <>
       {src ? (
-        <div className="overflow-hidden bg-secondary">
+        <div className="overflow-hidden border bg-card p-2">
           <img
             src={src}
             alt={experiment.image_alt || experiment.title}
@@ -18,7 +18,7 @@ function ExperimentCard({ experiment, index }: { experiment: Experiment; index: 
           />
         </div>
       ) : (
-        <div className="aspect-[4/3] w-full bg-secondary" aria-hidden />
+        <div className="aspect-[4/3] w-full border bg-secondary" aria-hidden />
       )}
       <div className="mt-4">
         {meta ? <p className="type-meta text-muted-foreground">{meta}</p> : null}

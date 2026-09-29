@@ -5,8 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Khalid Usman — monochrome editorial design system.
- * Portfolio chrome is strictly black and white; project imagery keeps its own colour.
+ * Khalid Usman — "White Notebook" design system.
+ * Paper canvas, near-black ink and one cobalt accent; project imagery supplies the rest of the colour.
  */
 
 @theme inline {
@@ -38,6 +38,7 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-ring-offset-background: var(--background);
+  --color-cobalt: var(--cobalt);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -49,6 +50,7 @@
 
   --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-hand: "Caveat", "Bradley Hand", cursive;
 
   --ease-editorial: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -56,38 +58,41 @@
 :root {
   --radius: 0px;
 
-  /* #FFFFFF */
-  --background: oklch(1 0 0);
-  /* #000000 */
-  --foreground: oklch(0 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0 0 0);
-  --primary: oklch(0 0 0);
-  --primary-foreground: oklch(1 0 0);
-  /* #F5F5F5 */
-  --secondary: oklch(0.9702 0 0);
-  --secondary-foreground: oklch(0 0 0);
-  --muted: oklch(0.9702 0 0);
+  /* Paper #FBFAF7 */
+  --background: oklch(0.985 0.0041 91.4);
+  /* Ink #111111 */
+  --foreground: oklch(0.1776 0 90);
+  --card: oklch(0.985 0.0041 91.4);
+  --card-foreground: oklch(0.1776 0 90);
+  --popover: oklch(0.985 0.0041 91.4);
+  --popover-foreground: oklch(0.1776 0 90);
+  --primary: oklch(0.1776 0 90);
+  --primary-foreground: oklch(0.985 0.0041 91.4);
+  /* #F3F1EC */
+  --secondary: oklch(0.9583 0.007 88.6);
+  --secondary-foreground: oklch(0.1776 0 90);
+  --muted: oklch(0.9583 0.007 88.6);
   /* #6B6B6B */
-  --muted-foreground: oklch(0.5162 0 0);
-  --accent: oklch(0.9702 0 0);
-  --accent-foreground: oklch(0 0 0);
+  --muted-foreground: oklch(0.5278 0 90);
+  --accent: oklch(0.9583 0.007 88.6);
+  --accent-foreground: oklch(0.1776 0 90);
   --destructive: oklch(0.4 0 0);
   --destructive-foreground: oklch(1 0 0);
-  /* #E5E5E5 */
-  --border: oklch(0.9219 0 0);
-  --input: oklch(0.9219 0 0);
-  --ring: oklch(0 0 0);
-  --sidebar: oklch(1 0 0);
-  --sidebar-foreground: oklch(0 0 0);
-  --sidebar-primary: oklch(0 0 0);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.9702 0 0);
-  --sidebar-accent-foreground: oklch(0 0 0);
-  --sidebar-border: oklch(0.9219 0 0);
-  --sidebar-ring: oklch(0 0 0);
+  /* Paper rule #E6E3DC */
+  --border: oklch(0.9162 0.01 87.5);
+  --input: oklch(0.9162 0.01 87.5);
+  --ring: oklch(0.4374 0.1348 264.4);
+  --sidebar: oklch(0.985 0.0041 91.4);
+  --sidebar-foreground: oklch(0.1776 0 90);
+  --sidebar-primary: oklch(0.1776 0 90);
+  --sidebar-primary-foreground: oklch(0.985 0.0041 91.4);
+  --sidebar-accent: oklch(0.9583 0.007 88.6);
+  --sidebar-accent-foreground: oklch(0.1776 0 90);
+  --sidebar-border: oklch(0.9162 0.01 87.5);
+  --sidebar-ring: oklch(0.4374 0.1348 264.4);
+
+  /* Cobalt #2B4C9B, the single accent */
+  --cobalt: oklch(0.4374 0.1348 264.4);
 }
 
 .dark {
@@ -138,13 +143,24 @@
     font-synthesis-weight: none;
   }
 
+  /* Paper grain. Sits behind content so project imagery keeps its true colour. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
   ::selection {
-    background-color: var(--color-foreground);
+    background-color: var(--color-cobalt);
     color: var(--color-background);
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-foreground);
+    outline: 2px solid var(--color-cobalt);
     outline-offset: 3px;
   }
 
@@ -160,24 +176,27 @@
 /* Typography scale ------------------------------------------------------- */
 
 @utility type-display {
-  font-size: clamp(2.5rem, 7.4vw, 7rem);
-  line-height: 0.98;
-  letter-spacing: -0.035em;
-  font-weight: 500;
+  font-family: var(--font-serif);
+  font-size: clamp(2.75rem, 8vw, 7.5rem);
+  line-height: 0.96;
+  letter-spacing: -0.02em;
+  font-weight: 400;
 }
 
 @utility type-h1 {
-  font-size: clamp(2rem, 4.6vw, 3.75rem);
-  line-height: 1.04;
-  letter-spacing: -0.032em;
-  font-weight: 500;
+  font-family: var(--font-serif);
+  font-size: clamp(2.25rem, 5vw, 4rem);
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  font-weight: 400;
 }
 
 @utility type-h2 {
-  font-size: clamp(1.625rem, 3vw, 2.5rem);
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-  font-weight: 500;
+  font-family: var(--font-serif);
+  font-size: clamp(1.875rem, 3.4vw, 2.875rem);
+  line-height: 1.08;
+  letter-spacing: -0.012em;
+  font-weight: 400;
 }
 
 @utility type-h3 {
@@ -212,6 +231,14 @@
   letter-spacing: 0.01em;
 }
 
+@utility type-hand {
+  font-family: var(--font-hand);
+  font-size: clamp(1.25rem, 1.7vw, 1.625rem);
+  font-weight: 500;
+  line-height: 1.1;
+  color: var(--color-cobalt);
+}
+
 @utility type-serif {
   font-family: var(--font-serif);
   font-weight: 400;
@@ -237,6 +264,17 @@
 
 @utility rule-top {
   border-top: 1px solid var(--color-border);
+}
+
+/* Faint notebook lines, applied to the public page wrapper. */
+@utility paper-lines {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(2.25rem - 1px),
+    color-mix(in oklch, var(--color-border) 55%, transparent) calc(2.25rem - 1px),
+    color-mix(in oklch, var(--color-border) 55%, transparent) 2.25rem
+  );
 }
 
 /* Motion ----------------------------------------------------------------- */
@@ -353,6 +391,185 @@
   animation-timing-function: var(--ease-editorial);
 }
 
+/* Page numbers ------------------------------------------------------------
+ * Numbered in document order, so conditional sections never leave gaps. */
+
+body {
+  counter-reset: page;
+}
+
+.page-no::before {
+  counter-increment: page;
+  content: "p. " counter(page, decimal-leading-zero);
+}
+
+/* Hero entrance ------------------------------------------------------------ */
+
+.hero-in {
+  animation: hero-rise 0.9s var(--ease-editorial) both;
+  animation-delay: calc(var(--i, 0) * 90ms);
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Notebook sheets -----------------------------------------------------------
+ * Sheets rise into view, the image emerges from behind the paper, and a
+ * subtle scroll parallax runs where the browser supports scroll timelines. */
+
+.sheet {
+  box-shadow:
+    0 1px 0 oklch(0 0 0 / 4%),
+    0 22px 44px -28px oklch(0 0 0 / 24%);
+}
+
+.sheet.reveal {
+  transform: translateY(40px);
+  transition-duration: 0.9s;
+}
+
+.sheet.reveal-in {
+  transform: none;
+}
+
+.sheet-media {
+  clip-path: inset(14% 0 0 0);
+  box-shadow: 0 24px 48px -28px oklch(0 0 0 / 35%);
+  transition: clip-path 1s var(--ease-editorial) 0.15s;
+}
+
+.reveal-in .sheet-media {
+  clip-path: inset(0);
+}
+
+@supports (animation-timeline: view()) {
+  .sheet-parallax {
+    animation: sheet-parallax linear both;
+    animation-timeline: view();
+  }
+}
+
+@keyframes sheet-parallax {
+  from {
+    transform: translateY(-3%) scale(1.06);
+  }
+  to {
+    transform: translateY(3%) scale(1.06);
+  }
+}
+
+@media (max-width: 767px) {
+  .sheet.reveal {
+    transform: translateY(24px);
+  }
+}
+
+/* Handwritten notes ---------------------------------------------------------- */
+
+.note-text {
+  display: inline-block;
+  transform: rotate(-1.5deg);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 1s var(--ease-editorial) 0.2s;
+}
+
+.reveal-in .note-text {
+  clip-path: inset(0 -0.25em 0 0);
+}
+
+.note-arrow path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.7s var(--ease-editorial) 0.9s;
+}
+
+.reveal-in .note-arrow path {
+  stroke-dashoffset: 0;
+}
+
+/* Process ---------------------------------------------------------------------- */
+
+.process-line {
+  position: absolute;
+  inset-inline: 0;
+  top: 3.5px;
+  height: 1px;
+  background-color: color-mix(in oklch, var(--color-cobalt) 45%, transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.4s var(--ease-editorial);
+}
+
+.reveal-in .process-line {
+  transform: scaleX(1);
+}
+
+.process-step {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.7s var(--ease-editorial),
+    transform 0.7s var(--ease-editorial);
+  transition-delay: calc(var(--i, 0) * 120ms);
+}
+
+.reveal-in .process-step {
+  opacity: 1;
+  transform: none;
+}
+
+/* Mobile notebook menu ---------------------------------------------------
+ * The page drops in from the top; rows and the hand-drawn active underline
+ * follow in sequence. Visibility waits for the close transition so a closed
+ * menu is never focusable or visible. */
+
+.nb-menu {
+  clip-path: inset(0 0 100% 0);
+  visibility: hidden;
+  transition:
+    clip-path 0.65s var(--ease-editorial),
+    visibility 0s linear 0.65s;
+}
+
+.nb-menu[data-open="true"] {
+  clip-path: inset(0);
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.nb-menu-item {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 0.3s var(--ease-editorial),
+    transform 0.3s var(--ease-editorial);
+}
+
+.nb-menu[data-open="true"] .nb-menu-item {
+  opacity: 1;
+  transform: none;
+  transition-duration: 0.55s;
+  transition-delay: calc(180ms + var(--i, 0) * 60ms);
+}
+
+.hand-underline path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.6s var(--ease-editorial) 0.5s;
+}
+
+.nb-menu[data-open="true"] .hand-underline path {
+  stroke-dashoffset: 0;
+}
+
 /* Global loading indicator ---------------------------------------------
  * Three bars echoing the site's editorial rule-lines, animating in a
  * staggered wave rather than a generic spinner. */
@@ -396,6 +613,36 @@
   }
 
   .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .nb-menu-item,
+  .hand-underline path,
+  .hero-in,
+  .process-step {
+    animation-delay: 0s !important;
+    transition-delay: 0s !important;
+  }
+
+  .sheet-parallax {
+    animation: none !important;
+  }
+
+  .sheet-media,
+  .note-text {
+    clip-path: none;
+  }
+
+  .note-arrow path {
+    stroke-dashoffset: 0;
+  }
+
+  .process-line {
+    transform: none;
+  }
+
+  .process-step {
     opacity: 1;
     transform: none;
   }

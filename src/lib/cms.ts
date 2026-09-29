@@ -255,7 +255,7 @@ export const SETTINGS_FALLBACK: SiteSettings = {
   instagram_url: "https://www.instagram.com/the.khaleed",
   resume_url: "",
   hero_eyebrow: "Product Design / UI/UX / Digital Experiences",
-  hero_headline: "I design digital products with clarity and character.",
+  hero_headline: "UI/UX Designer & Web Designer",
   hero_description:
     "Product designer focused on creating thoughtful digital experiences, interfaces and products.",
   hero_image_url: "",
@@ -274,4 +274,59 @@ export const SETTINGS_FALLBACK: SiteSettings = {
   contact_skills: "",
   footer_headline: "Let's make something worth using.",
   footer_description: "",
+  footer_role: "UI/UX Designer & Web Designer",
+  hero_note: "Selected work below",
+  intro_heading:
+    "I design interfaces that explain themselves and websites that feel considered rather than assembled.",
+  intro_capabilities:
+    "UI/UX Design, Web Design, Responsive Experiences, Prototyping, Interaction Design, Design Systems",
+  work_heading: "Selected Work",
+  work_note: "Open a sheet to read the case study",
+  work_view_all_text: "View all work",
+  work_view_all_url: "/work",
+  websites_heading: "Published Websites",
+  websites_description: "Web experiences I've designed and brought to life.",
+  services_heading: "What I Do",
+  services_list: [
+    "UI/UX Design | Research-led interfaces for web and mobile products, from flows and wireframes to polished screens.",
+    "Web Design | Responsive websites designed to be clear, quick to read and ready to publish.",
+    "Prototyping | Interactive prototypes that test ideas early and show how a product should feel.",
+    "Design Systems | Reusable components, tokens and guidelines that keep products consistent as they grow.",
+  ].join("\n"),
+  about_label: "Designer's Note",
+  about_note: "A little about me",
+  process_heading: "How I Design",
+  process_note: "Rarely a straight line",
+  process_steps: [
+    "Discover | Understand the people, the problem and the constraints before anything is drawn.",
+    "Define | Turn what was learned into a clear brief, priorities and measures of success.",
+    "Design | Explore layouts, flows and visual direction, then commit to the strongest one.",
+    "Prototype | Make it interactive so the idea can be tested with real people.",
+    "Refine | Polish the details, fix what testing revealed and prepare the handoff.",
+  ].join("\n"),
+  experiments_heading: "Experiments",
+  contact_note: "Say hello",
+  work_page_heading: "Work",
+  work_page_description: "Every project, from case studies to published websites.",
 };
+
+/** Comma-separated CMS text into a clean list. */
+export function parseList(value?: string): string[] {
+  return (value ?? "")
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+/** One "Title | description" entry per line. */
+export function parseEntries(value?: string): { title: string; body: string }[] {
+  return (value ?? "")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const [title = "", ...rest] = line.split("|");
+      return { title: title.trim(), body: rest.join("|").trim() };
+    })
+    .filter((entry) => entry.title);
+}

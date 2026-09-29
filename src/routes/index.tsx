@@ -1,12 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import type { CSSProperties } from "react";
 
+import { Annotation } from "@/components/site/Annotation";
 import { CopyButton } from "@/components/site/CopyButton";
 import { ExperimentsList } from "@/components/site/ExperimentsList";
 import { Footer } from "@/components/site/Footer";
 import { Nav } from "@/components/site/Nav";
-import { ProjectList } from "@/components/site/ProjectList";
-import { PublishedWebsiteList } from "@/components/site/PublishedWebsiteList";
+import { ProjectSheets } from "@/components/site/ProjectSheet";
 import { Reveal } from "@/components/site/Reveal";
 import { RichText } from "@/components/site/RichText";
 import { ToolkitTicker } from "@/components/site/ToolkitTicker";
@@ -14,16 +15,18 @@ import {
   experimentsQuery,
   imageSrc,
   navItemsQuery,
+  parseEntries,
+  parseList,
   projectsQuery,
   settingsQuery,
   SETTINGS_FALLBACK,
   toolkitItemsQuery,
 } from "@/lib/cms";
-import { cn } from "@/lib/utils";
+import { cn, pad, stagger } from "@/lib/utils";
 
-const TITLE = "Khalid Usman — Product Designer";
+const TITLE = "Khalid Usman | UI/UX Designer & Web Designer";
 const DESCRIPTION =
-  "Product designer focused on creating thoughtful digital experiences, interfaces and products. Selected work, case studies and design thinking.";
+  "UI/UX and web designer creating thoughtful, responsive digital experiences. Selected work, case studies and design thinking.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -48,14 +51,20 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const PRINCIPLES = [
-  {
-    title: "Clarity",
-    body: "Interfaces should make complicated things easier to understand.",
-  },
-  { title: "Intent", body: "Every element should have a reason to exist." },
-  { title: "Character", body: "Useful products can still have personality." },
-];
+function SectionHead({ title, aside, note }: { title: string; aside?: string; note?: string }) {
+  return (
+    <div className="mb-12 md:mb-20">
+      <Reveal className="flex items-baseline justify-between gap-6">
+        <h2 className="type-h2">{title}</h2>
+        <span className="type-label flex gap-4 text-muted-foreground">
+          {aside ? <span>{aside}</span> : null}
+          <span className="page-no" aria-hidden />
+        </span>
+      </Reveal>
+      <Annotation text={note} arrow delay={200} className="mt-3" />
+    </div>
+  );
+}
 
 function Home() {
   const { data: projects } = useSuspenseQuery(projectsQuery);
@@ -78,140 +87,238 @@ function Home() {
     .split(",")
     .map((skill) => skill.trim())
     .filter(Boolean);
-  const heroImage = imageSrc(settings["hero_image_url"]);
+  const portrait = imageSrc(settings["hero_image_url"]);
+  const capabilities = parseList(settings["intro_capabilities"]);
+  const services = parseEntries(settings["services_list"]);
+  const steps = parseEntries(settings["process_steps"]);
 
   return (
     <>
-      <Nav navItems={navItems} resumeUrl={settings["resume_url"] || undefined} />
+      <Nav navItems={navItems} settings={settings} />
 
-      <main id="main">
+      <main id="main" className="paper-lines">
         {/* Hero */}
-        <section className="shell pt-40 pb-24 md:pt-56 md:pb-40">
-          <div className="grid gap-16 md:grid-cols-12 md:items-center">
-            <div className={heroImage ? "md:col-span-7" : "md:col-span-12"}>
-              <Reveal immediate>
-                <p className="type-label text-muted-foreground">{settings["hero_eyebrow"]}</p>
-              </Reveal>
-              <Reveal immediate>
-                <h1 className="type-display mt-8 max-w-[18ch] md:mt-12">
-                  {settings["hero_headline"]}
-                </h1>
-              </Reveal>
-              <Reveal immediate className="mt-10 md:mt-16">
-                <p className="type-body max-w-[44ch] text-muted-foreground">
-                  {settings["hero_description"]}
-                </p>
-                <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
-                  {settings["primary_cta_text"] ? (
-                    <a href={settings["primary_cta_url"] || "#work"} className="btn-primary">
-                      {settings["primary_cta_text"]}
-                    </a>
-                  ) : null}
-                  {settings["secondary_cta_text"] ? (
-                    <a
-                      href={settings["secondary_cta_url"] || "#contact"}
-                      className="group type-meta inline-flex items-center gap-2"
-                    >
-                      <span className="link-underline">{settings["secondary_cta_text"]}</span>
-                      <span className="arrow-shift group-hover:translate-x-1 group-hover:-translate-y-1">
-                        ↗
-                      </span>
-                    </a>
-                  ) : null}
-                </div>
-              </Reveal>
+        <section className="shell pb-24 pt-32 md:pb-40 md:pt-48">
+          <div
+            className="hero-in flex items-baseline justify-between gap-6 border-b pb-4"
+            style={stagger(0)}
+          >
+            <p className="type-label text-muted-foreground">{settings["hero_eyebrow"]}</p>
+            <span className="page-no type-label text-muted-foreground" aria-hidden />
+          </div>
+          <h1 className="type-display hero-in mt-10 max-w-[16ch] md:mt-16" style={stagger(1)}>
+            {settings["hero_headline"]}
+          </h1>
+          <div className="mt-10 grid gap-10 md:mt-16 md:grid-cols-12 md:items-end">
+            <div className="hero-in md:col-span-7" style={stagger(2)}>
+              <p className="type-body max-w-[44ch] text-muted-foreground">
+                {settings["hero_description"]}
+              </p>
+              <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
+                {settings["primary_cta_text"] ? (
+                  <a href={settings["primary_cta_url"] || "#work"} className="btn-primary">
+                    {settings["primary_cta_text"]}
+                  </a>
+                ) : null}
+                {settings["secondary_cta_text"] ? (
+                  <a
+                    href={settings["secondary_cta_url"] || "#contact"}
+                    className="group type-meta inline-flex items-center gap-2"
+                  >
+                    <span className="link-underline">{settings["secondary_cta_text"]}</span>
+                    <span className="arrow-shift group-hover:translate-x-1 group-hover:-translate-y-1">
+                      ↗
+                    </span>
+                  </a>
+                ) : null}
+              </div>
             </div>
-
-            {heroImage ? (
-              <Reveal immediate className="md:col-span-5">
-                <div className="overflow-hidden bg-secondary">
-                  <img
-                    src={heroImage}
-                    alt={settings["hero_image_alt"] || "Portrait of Khalid Usman"}
-                    className="aspect-[4/5] w-full object-cover"
-                    decoding="async"
-                  />
-                </div>
-              </Reveal>
-            ) : null}
+            <Annotation
+              text={settings["hero_note"]}
+              arrow
+              delay={700}
+              className="md:col-span-4 md:col-start-9"
+            />
           </div>
         </section>
 
+        {/* Introduction */}
+        {settings["intro_heading"] ? (
+          <section className="rule-top">
+            <div className="shell grid gap-12 py-24 md:grid-cols-12 md:py-40">
+              <Reveal className="md:col-span-3">
+                <span className="page-no type-label text-muted-foreground" aria-hidden />
+              </Reveal>
+              <div className="md:col-span-9">
+                <Reveal>
+                  <p className="type-h1 max-w-[26ch]">{settings["intro_heading"]}</p>
+                </Reveal>
+                {capabilities.length ? (
+                  <Reveal delay={80}>
+                    <ul className="mt-12 grid gap-x-8 gap-y-4 sm:grid-cols-2 lg:grid-cols-3 md:mt-16">
+                      {capabilities.map((capability) => (
+                        <li key={capability} className="type-meta border-t pt-3">
+                          {capability}
+                        </li>
+                      ))}
+                    </ul>
+                  </Reveal>
+                ) : null}
+              </div>
+            </div>
+          </section>
+        ) : null}
+
         {/* Selected work */}
         <section id="work" className="shell scroll-mt-24 pb-24 md:pb-40">
-          <Reveal className="mb-12 flex items-baseline justify-between md:mb-20">
-            <h2 className="type-h2">Selected Work</h2>
-            <span className="type-label text-muted-foreground">
-              {String(shown.length).padStart(2, "0")} Projects
-            </span>
-          </Reveal>
-          <ProjectList projects={shown} />
+          <SectionHead
+            title={settings["work_heading"] ?? ""}
+            aside={`${pad(shown.length)} Projects`}
+            note={settings["work_note"] ?? ""}
+          />
+          <ProjectSheets
+            projects={shown}
+            empty="No projects published yet. Sign in to the studio to add the first case study."
+          />
         </section>
 
         {/* Published websites */}
         {publishedWebsites.length ? (
           <section id="websites" className="shell scroll-mt-24 pb-24 md:pb-40">
-            <Reveal className="mb-6 md:mb-8">
-              <h2 className="type-h2">Published Websites</h2>
+            <SectionHead title={settings["websites_heading"] ?? ""} />
+            {settings["websites_description"] ? (
+              <Reveal className="-mt-8 mb-12 md:-mt-14 md:mb-20">
+                <p className="type-body max-w-[46ch] text-muted-foreground">
+                  {settings["websites_description"]}
+                </p>
+              </Reveal>
+            ) : null}
+            <ProjectSheets projects={publishedWebsites} />
+          </section>
+        ) : null}
+
+        {/* View all work */}
+        {settings["work_view_all_text"] ? (
+          <section className="shell pb-24 md:pb-40">
+            <Reveal className="rule-top pt-10">
+              <a
+                href={settings["work_view_all_url"] || "/work"}
+                className="group type-h2 inline-flex items-center gap-4"
+              >
+                <span className="link-underline">{settings["work_view_all_text"]}</span>
+                <span className="arrow-shift group-hover:translate-x-1 group-hover:-translate-y-1">
+                  ↗
+                </span>
+              </a>
             </Reveal>
-            <Reveal delay={40} className="mb-12 md:mb-20">
-              <p className="type-body max-w-[46ch] text-muted-foreground">
-                Web experiences I've designed and brought to life.
-              </p>
-            </Reveal>
-            <PublishedWebsiteList projects={publishedWebsites} />
           </section>
         ) : null}
 
         {/* Toolkit ticker */}
         <ToolkitTicker items={toolkitItems} />
 
-        {/* Philosophy */}
-        <section className="rule-top">
-          <div className="shell py-24 md:py-40">
-            <Reveal>
-              <h2 className="type-h2">How I think</h2>
-            </Reveal>
-            <dl className="mt-12 grid gap-12 md:mt-20 md:grid-cols-3 md:gap-16">
-              {PRINCIPLES.map((principle, index) => (
-                <Reveal key={principle.title} delay={index * 80}>
-                  <dt className="type-h3 border-t pt-6">{principle.title}</dt>
-                  <dd className="type-body mt-4 max-w-[34ch] text-muted-foreground">
-                    {principle.body}
-                  </dd>
-                </Reveal>
-              ))}
-            </dl>
-          </div>
+        {/* What I do */}
+        {services.length ? (
+          <section className="rule-top">
+            <div className="shell py-24 md:py-40">
+              <SectionHead title={settings["services_heading"] ?? ""} />
+              <dl className="grid gap-12 sm:grid-cols-2 md:gap-10 lg:grid-cols-4">
+                {services.map((service, index) => (
+                  <Reveal key={service.title} delay={index * 80}>
+                    <dt className="border-t pt-6">
+                      <span className="type-label text-cobalt">{pad(index + 1)}</span>
+                      <span className="type-serif mt-4 block text-3xl leading-tight">
+                        {service.title}
+                      </span>
+                    </dt>
+                    <dd className="type-small mt-4 max-w-[34ch] text-muted-foreground">
+                      {service.body}
+                    </dd>
+                  </Reveal>
+                ))}
+              </dl>
+            </div>
+          </section>
+        ) : null}
+
+        {/* Designer's note */}
+        <section id="about" className="shell scroll-mt-24 pb-24 md:pb-40">
+          <Reveal as="article" className="sheet relative border bg-card p-6 md:p-12">
+            <div className="grid gap-12 md:grid-cols-12 md:gap-10">
+              <div className={portrait ? "md:col-span-7" : "md:col-span-12"}>
+                <p className="type-label flex justify-between gap-6 text-muted-foreground">
+                  <span>{settings["about_label"]}</span>
+                  <span className="page-no" aria-hidden />
+                </p>
+                <p className="type-h1 mt-8 max-w-[26ch]">{settings["about_heading"]}</p>
+                <RichText text={settings["about_paragraph"]} className="mt-8" />
+                {portrait ? null : (
+                  <Annotation text={settings["about_note"]} arrow className="mt-8" />
+                )}
+              </div>
+              {portrait ? (
+                <div className="md:col-span-5">
+                  <div className="border bg-card p-2 shadow-[0_18px_36px_-24px_oklch(0_0_0/35%)]">
+                    <img
+                      src={portrait}
+                      alt={settings["hero_image_alt"] || "Portrait of Khalid Usman"}
+                      className="aspect-[4/5] w-full object-cover"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                  <Annotation text={settings["about_note"]} arrow className="mt-5" />
+                </div>
+              ) : null}
+            </div>
+          </Reveal>
         </section>
 
-        {/* About */}
-        <section id="about" className="rule-top scroll-mt-24">
-          <div className="shell grid gap-12 py-24 md:grid-cols-12 md:py-40">
-            <Reveal className="md:col-span-3">
-              <h2 className="type-label text-muted-foreground">About</h2>
-            </Reveal>
-            <div className="md:col-span-9">
-              <Reveal>
-                <p className="type-h1 max-w-[30ch]">{settings["about_heading"]}</p>
-              </Reveal>
-              <Reveal delay={80} className="mt-10">
-                <RichText text={settings["about_paragraph"]} />
+        {/* How I design */}
+        {steps.length ? (
+          <section className="rule-top">
+            <div className="shell py-24 md:py-40">
+              <SectionHead
+                title={settings["process_heading"] ?? ""}
+                note={settings["process_note"] ?? ""}
+              />
+              <Reveal className="relative">
+                <div aria-hidden className="process-line hidden md:block" />
+                <ol
+                  className="grid gap-10 md:gap-6 md:[grid-template-columns:repeat(var(--n),minmax(0,1fr))]"
+                  style={{ "--n": steps.length } as CSSProperties}
+                >
+                  {steps.map((step, index) => (
+                    <li
+                      key={step.title}
+                      style={stagger(index)}
+                      className="process-step relative border-l pl-6 md:border-l-0 md:pl-0 md:pt-8"
+                    >
+                      <span
+                        aria-hidden
+                        className="absolute -left-[4.5px] top-1 size-2 rounded-full bg-cobalt md:left-0 md:top-0"
+                      />
+                      <p className="type-label text-cobalt">{pad(index + 1)}</p>
+                      <h3 className="type-serif mt-4 text-3xl leading-tight">{step.title}</h3>
+                      <p className="type-small mt-3 max-w-[30ch] text-muted-foreground">
+                        {step.body}
+                      </p>
+                    </li>
+                  ))}
+                </ol>
               </Reveal>
             </div>
-          </div>
-        </section>
+          </section>
+        ) : null}
 
         {/* Experiments */}
         {experiments.length ? (
           <section id="experiments" className="rule-top scroll-mt-24">
             <div className="shell py-24 md:py-40">
-              <Reveal className="mb-12 flex items-baseline justify-between md:mb-16">
-                <h2 className="type-h2">Experiments</h2>
-                <span className="type-label text-muted-foreground">
-                  {String(experiments.length).padStart(2, "0")}
-                </span>
-              </Reveal>
+              <SectionHead
+                title={settings["experiments_heading"] ?? ""}
+                aside={pad(experiments.length)}
+              />
               <ExperimentsList experiments={experiments} />
             </div>
           </section>
@@ -220,9 +327,13 @@ function Home() {
         {/* Contact */}
         <section id="contact" className="rule-top scroll-mt-24">
           <div className="shell py-24 md:py-40">
+            <Reveal className="mb-10 flex justify-end">
+              <span className="page-no type-label text-muted-foreground" aria-hidden />
+            </Reveal>
             <Reveal>
               <h2 className="type-display max-w-[16ch]">{settings["contact_heading"]}</h2>
             </Reveal>
+            <Annotation text={settings["contact_note"]} arrow delay={200} className="mt-6" />
 
             {availabilityLabel || skills.length ? (
               <Reveal delay={40} className="mt-8 flex flex-wrap items-center gap-3">

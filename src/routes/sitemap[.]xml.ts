@@ -23,7 +23,10 @@ export const Route = createFileRoute("/sitemap.xml")({
           .select("slug, updated_at")
           .eq("published", true);
 
-        const entries = [urlEntry(SITE_URL, undefined, "1.0")];
+        const entries = [
+          urlEntry(SITE_URL, undefined, "1.0"),
+          urlEntry(`${SITE_URL}/work`, undefined, "0.9"),
+        ];
 
         for (const project of projects ?? []) {
           const lastmod = project.updated_at

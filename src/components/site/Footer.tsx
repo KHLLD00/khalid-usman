@@ -33,7 +33,7 @@ export function Footer({
       <div className="shell grid gap-12 rule-top py-16 md:grid-cols-12 md:py-20">
         <div className="md:col-span-5">
           <p className="text-sm font-medium">Khalid Usman</p>
-          <p className="type-meta mt-1 text-muted-foreground">Product Designer</p>
+          <p className="type-meta mt-1 text-muted-foreground">{settings["footer_role"]}</p>
           {email ? (
             <a href={`mailto:${email}`} className="type-meta link-underline mt-3 inline-block">
               {email}
@@ -115,6 +115,7 @@ export function Footer({
 
         <p className="type-meta text-muted-foreground md:col-span-3 md:text-right">
           <span>© {year} Khalid Usman</span>
+          <span className="page-no mt-2 block" aria-hidden />
           <span className="mt-2 block">Powered by <a href="https://kaytechwebsolutions.vercel.app" target="_blank" rel="noreferrer" className="link-underline">Kaytech Web Solutions</a></span>
         </p>
       </div>

@@ -90,7 +90,7 @@ function WebsiteDetail() {
 
   return (
     <>
-      <Nav navItems={navItems} resumeUrl={settings["resume_url"] || undefined} />
+      <Nav navItems={navItems} settings={settings} />
 
       <main id="main">
         <header className="shell pt-32 pb-12 md:pt-48 md:pb-20">

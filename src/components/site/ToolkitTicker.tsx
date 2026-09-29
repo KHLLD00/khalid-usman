@@ -18,7 +18,7 @@ export function ToolkitTicker({ items }: { items: ToolkitItem[] }) {
               <span
                 key={`${copy}-${item.id}`}
                 role="listitem"
-                className="type-h3 flex items-center gap-8 px-8 text-muted-foreground"
+                className="type-serif flex items-center gap-8 px-8 text-[1.625rem] text-muted-foreground"
               >
                 {item.name}
                 <span aria-hidden className="text-border">

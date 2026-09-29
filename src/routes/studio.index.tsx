@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FeaturedReorder } from "@/components/studio/FeaturedReorder";
 import { ImagePicker, TextArea, TextInput, Toggle } from "@/components/studio/Fields";
 import { supabase } from "@/integrations/supabase/client";
-import { allProjectsQuery, settingsQuery, type SiteSettings } from "@/lib/cms";
+import { allProjectsQuery, settingsQuery, SETTINGS_FALLBACK, type SiteSettings } from "@/lib/cms";
 import { describeSupabaseError } from "@/lib/studio";
 import { useState } from "react";
 
@@ -14,7 +14,7 @@ export const Route = createFileRoute("/studio/")({
 
 function SettingsPanel({ settings }: { settings: SiteSettings }) {
   const queryClient = useQueryClient();
-  const [draft, setDraft] = useState<SiteSettings>(settings);
+  const [draft, setDraft] = useState<SiteSettings>({ ...SETTINGS_FALLBACK, ...settings });
   const [saved, setSaved] = useState(false);
 
   const save = useMutation({
@@ -33,6 +33,27 @@ function SettingsPanel({ settings }: { settings: SiteSettings }) {
     setSaved(false);
     setDraft((current) => ({ ...current, [key]: value }));
   }
+
+  const text = (key: string, label: string, hint?: string) => (
+    <TextInput
+      label={label}
+      value={draft[key] ?? ""}
+      onChange={(value) => set(key, value)}
+      {...(hint ? { hint } : {})}
+    />
+  );
+
+  const area = (key: string, label: string, rows: number, hint?: string) => (
+    <div className="md:col-span-2">
+      <TextArea
+        label={label}
+        rows={rows}
+        value={draft[key] ?? ""}
+        onChange={(value) => set(key, value)}
+        {...(hint ? { hint } : {})}
+      />
+    </div>
+  );
 
   return (
     <section className="mt-20 border-t pt-10">
@@ -60,17 +81,92 @@ function SettingsPanel({ settings }: { settings: SiteSettings }) {
                 onChange={(value) => set("hero_description", value)}
               />
             </div>
+            {text(
+              "hero_note",
+              "Hero handwritten note",
+              "Short margin note beside the hero. Leave blank to hide it.",
+            )}
             <div className="md:col-span-2">
               <ImagePicker
-                label="Hero image"
+                label="Portrait"
                 folder="hero"
                 value={draft["hero_image_url"] || null}
                 onChange={(value) => set("hero_image_url", value ?? "")}
                 altValue={draft["hero_image_alt"] ?? ""}
                 onAltChange={(value) => set("hero_image_alt", value)}
-                hint="Shown at full colour alongside your project imagery."
+                hint="Shown in the Designer's note section on the homepage."
               />
             </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="type-label text-muted-foreground">Introduction</h3>
+          <div className="mt-4 grid gap-6 md:grid-cols-2">
+            {area(
+              "intro_heading",
+              "Introduction statement",
+              3,
+              "Leave blank to hide the introduction section.",
+            )}
+            {area(
+              "intro_capabilities",
+              "Capabilities",
+              2,
+              "Comma-separated. Shown as a preview list under the statement.",
+            )}
+          </div>
+        </div>
+
+        <div>
+          <h3 className="type-label text-muted-foreground">Work sections</h3>
+          <div className="mt-4 grid gap-6 md:grid-cols-2">
+            {text("work_heading", "Selected work heading")}
+            {text(
+              "work_note",
+              "Selected work note",
+              "Handwritten margin note. Leave blank to hide it.",
+            )}
+            {text("websites_heading", "Published websites heading")}
+            {text("websites_description", "Published websites description")}
+            {text("work_view_all_text", "View all work text", "Leave blank to hide the link.")}
+            {text("work_view_all_url", "View all work URL", "Defaults to /work.")}
+            {text("work_page_heading", "Work page heading")}
+            {text("work_page_description", "Work page description")}
+          </div>
+        </div>
+
+        <div>
+          <h3 className="type-label text-muted-foreground">What I do</h3>
+          <div className="mt-4 grid gap-6 md:grid-cols-2">
+            {text("services_heading", "Heading")}
+            {area("services_list", "Services", 6, "One per line as Title | Description.")}
+          </div>
+        </div>
+
+        <div>
+          <h3 className="type-label text-muted-foreground">Designer&apos;s note</h3>
+          <div className="mt-4 grid gap-6 md:grid-cols-2">
+            {text("about_label", "Section label")}
+            {text("about_note", "Handwritten note", "Leave blank to hide it.")}
+          </div>
+        </div>
+
+        <div>
+          <h3 className="type-label text-muted-foreground">How I design</h3>
+          <div className="mt-4 grid gap-6 md:grid-cols-2">
+            {text("process_heading", "Heading")}
+            {text("process_note", "Handwritten note", "Leave blank to hide it.")}
+            {area("process_steps", "Steps", 6, "One per line as Title | Description, in order.")}
+          </div>
+        </div>
+
+        <div>
+          <h3 className="type-label text-muted-foreground">Other sections</h3>
+          <div className="mt-4 grid gap-6 md:grid-cols-2">
+            {text("experiments_heading", "Experiments heading")}
+            {text("contact_note", "Contact handwritten note", "Leave blank to hide it.")}
+            {text("footer_role", "Footer role line")}
           </div>
         </div>
 

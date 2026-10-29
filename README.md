@@ -1,21 +1,26 @@
-# Khalid Usman Portfolio
+# Khalid Usman | Portfolio
 
-A content-driven portfolio for **Khalid Usman**, a UI/UX and web designer. The site presents selected case studies, published websites, design process, experiments, and contact information through a minimal editorial interface.
+A personal portfolio showcasing selected work by **Khalid Usman**, a UI/UX and web designer. The site brings together product-design case studies, published websites, experiments, and ways to get in touch in a minimal, editorial-style experience.
 
-**Live site:** https://khalid-usman.vercel.app  
-**Repository:** https://github.com/KHLLD00/khalid-usman
+<p align="center">
+  <a href="https://khalid-usman.vercel.app">Live Portfolio</a> ·
+  <a href="https://github.com/KHLLD00/khalid-usman">Source Code</a>
+</p>
 
-## Features
+## Overview
 
-- Responsive portfolio homepage and project presentations
-- Dynamic project content powered by Supabase
-- Separate project types for case studies and published websites
-- Content-managed navigation, site settings, toolkit items, and experiments
-- Supabase-backed Studio routes for managing portfolio content
-- Responsive image handling for project imagery
-- Page metadata and a generated sitemap
-- Light and dark themes, with the initial theme following the visitor's device preference
-- Keyboard focus styles and reduced-motion support for selected animations
+The portfolio is built around a content-driven structure, so project details and selected site content can be managed through a Supabase-backed Studio interface rather than being hard-coded into each page.
+
+### Highlights
+
+- Responsive portfolio pages and project detail views
+- Support for both design case studies and published websites
+- Supabase-powered content management for projects and site settings
+- Editable navigation, toolkit items, and experiments
+- Project galleries, external links, featured status, publication status, and ordering
+- Light and dark themes, with the initial theme based on the visitor's system preference
+- Accessible focus styles and reduced-motion support for selected animations
+- Page metadata and sitemap support
 
 ## Tech stack
 
@@ -23,113 +28,125 @@ A content-driven portfolio for **Khalid Usman**, a UI/UX and web designer. The s
 - **TanStack Start** and **TanStack Router**
 - **Tailwind CSS 4**
 - **Supabase** for data and image storage
-- **TanStack Query** for server-state and data fetching
+- **TanStack Query** for server-state management
 - **Vite** for development and production builds
 - **Lucide React** for icons
 
 ## Getting started
 
-### Requirements
+### Prerequisites
 
-- [Bun](https://bun.sh/) (recommended, the repository includes `bun.lock`)
-- A Supabase project with the schema and tables expected by the application
+- [Bun](https://bun.sh/) (recommended; the repository includes `bun.lock`)
+- Access to the connected Supabase project, with the required schema, storage, authentication, and Row Level Security (RLS) policies configured
 
-### Install dependencies
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/KHLLD00/khalid-usman.git
+cd khalid-usman
+```
+
+### 2. Install dependencies
 
 ```bash
 bun install
 ```
 
-### Configure environment variables
+### 3. Configure environment variables
 
-Create a local `.env` file in the project root. Add your Supabase project URL and publishable key:
+Create a `.env` file in the project root. Use the same project URL and publishable key for both the Vite client variables and the server-side variables:
 
 ```dotenv
 VITE_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
 VITE_SUPABASE_PUBLISHABLE_KEY=YOUR_SUPABASE_PUBLISHABLE_KEY
+
+SUPABASE_URL=https://YOUR_PROJECT.supabase.co
+SUPABASE_PUBLISHABLE_KEY=YOUR_SUPABASE_PUBLISHABLE_KEY
 ```
 
-Use the values from your Supabase project settings. The publishable/anon key is intended for client-side use; protect data with correctly configured Supabase Row Level Security (RLS) policies. **Never put a service-role key or other server secret in a `VITE_*` variable.**
+Replace the placeholders with values from the Supabase project connected to the portfolio. The `VITE_*` variables are used by Vite for the client bundle; the non-prefixed variables provide the server-side fallback used during server rendering.
 
-Do not commit local environment files or real credentials. Keep `.env` private and share only placeholder values in documentation.
+The publishable key is intended for application use. Keep database access protected with appropriate RLS policies. **Never put a Supabase secret key or service-role key in a `VITE_*` variable, commit credentials, or share real values in documentation.**
 
-### Run locally
+### 4. Start the development server
 
 ```bash
 bun run dev
 ```
 
-Vite prints the local development URL in the terminal.
+Use the local URL printed by Vite in your terminal.
 
 ## Available scripts
 
-| Command | Purpose |
+| Command | Description |
 | --- | --- |
-| `bun run dev` | Start the local development server |
+| `bun run dev` | Start the development server |
 | `bun run build` | Create a production build |
 | `bun run build:dev` | Build using development mode |
 | `bun run preview` | Preview the production build locally |
 | `bun run lint` | Run ESLint |
-| `bun run format` | Format repository files with Prettier |
+| `bun run format` | Format files with Prettier |
 
 ## Project structure
 
 ```text
 src/
 ├── components/
-│   ├── site/       # Public-facing navigation, footer, project sheets, and content UI
-│   ├── studio/     # Studio/admin interface components
-│   └── ui/         # Shared UI primitives
-├── integrations/   # Supabase client and integrations
-├── lib/            # CMS queries, helpers, and shared utilities
-├── routes/         # TanStack file-based routes
-├── router.tsx      # Router and query-client setup
-├── server.ts       # Server entry point
-└── styles.css      # Global styles, design tokens, and theme variables
+│   ├── site/          # Public-facing site and project content components
+│   ├── studio/        # Studio/admin interface components
+│   └── ui/            # Shared UI primitives
+├── integrations/      # Supabase client and integration code
+├── lib/               # CMS queries, helpers, and shared utilities
+├── routes/            # TanStack file-based routes
+├── router.tsx         # Router and query-client setup
+├── server.ts          # Server entry point
+└── styles.css         # Global styles, design tokens, and theme variables
 
-supabase/           # Supabase configuration and database assets
-public/             # Static public assets
+supabase/              # Supabase configuration and database assets
+public/                # Static assets
 ```
 
 ## Content management
 
-Public portfolio content is queried from Supabase. The CMS helpers in `src/lib/cms.ts` define the data types and queries used by the interface.
+The public site reads portfolio content from Supabase. CMS query helpers and data types are defined in `src/lib/cms.ts`.
 
-The current content model includes:
+The content model includes:
 
-- **Projects:** case studies and published websites, with slugs, descriptions, images, project details, gallery content, links, featured state, publication state, and sort order
-- **Site settings:** editable copy, contact details, social links, section headings, and other homepage content
-- **Navigation items:** editable labels, URLs, visibility, and order
-- **Toolkit items:** editable skills/tools displayed in the site ticker
+- **Projects:** case studies and published websites, with descriptions, slugs, imagery, project details, galleries, links, featured and publication states, and sort order
+- **Site settings:** editable copy, contact information, social links, and section headings
+- **Navigation items:** labels, URLs, visibility, and ordering
+- **Toolkit items:** skills and tools shown on the site
 - **Experiments:** optional experiments with descriptions, imagery, and external links
 
-Database schema, storage buckets, authentication, and RLS policies must be configured in Supabase for the connected features to work. Never rely on frontend filtering as the only security boundary; enforce permissions in Supabase.
-
-## Theming
-
-The site supports light and dark themes. On a first visit, it follows the visitor's operating-system preference. A manual selection is saved in the browser and takes precedence on later visits. The theme changes the portfolio's interface while keeping project imagery in its original colours.
+The connected Supabase project must have the expected tables, storage configuration, authentication, and RLS policies. Client-side filtering is not a security boundary; enforce access permissions in Supabase.
 
 ## Deployment
 
-The application is configured for a Vite/TanStack Start deployment and the portfolio is hosted at Vercel.
+The live portfolio is hosted on Vercel.
 
-1. Import the repository into your deployment provider.
-2. Configure `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` in the deployment environment.
-3. Ensure the production Supabase project has the required tables, storage bucket, authentication, and RLS policies.
-4. Run the production build and deploy the generated application using the provider's supported TanStack Start/Vite configuration.
-5. Verify the homepage, project routes, Studio access, sitemap, and contact links on the deployed domain.
+1. Import the repository into Vercel and configure the project for the existing TanStack Start/Vite setup.
+2. Add all four environment variables listed above to the relevant Vercel environments. Use the same project URL and publishable key for each matching pair.
+3. Confirm the connected Supabase project has the required schema, storage, authentication, and RLS policies.
+4. Deploy, then verify the homepage, project pages, Studio access, sitemap, and contact links.
 
-## Contributing and maintenance
+Environment-variable changes generally require a new deployment to take effect.
 
-This is a personal portfolio project. Before shipping changes, run:
+## Maintenance
+
+Before shipping code changes, run:
 
 ```bash
 bun run lint
 bun run build
 ```
 
-Keep the public interface responsive, preserve the restrained monochrome design system, and retain the original colours of project screenshots. Update this README whenever setup steps, scripts, integrations, or deployment requirements change.
+Keep the interface responsive, preserve the restrained monochrome visual identity, and retain the original colours of project imagery. Update this README when setup requirements, scripts, integrations, or deployment steps change.
+
+## Contact
+
+- **Portfolio:** [khalid-usman.vercel.app](https://khalid-usman.vercel.app)
+- **GitHub:** [@KHLLD00](https://github.com/KHLLD00)
 
 ## License
 
-No license is currently specified. Contact the repository owner before reusing the code or assets.
+No license is currently specified in this repository. Contact the repository owner before reusing the code or assets.

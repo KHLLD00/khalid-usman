@@ -1,8 +1,12 @@
 import { Link, useLocation } from "@tanstack/react-router";
+import { Moon, Sun } from "lucide-react";
 import { useEffect, useState, type CSSProperties } from "react";
 
 import type { NavItem, SiteSettings } from "@/lib/cms";
 import { cn } from "@/lib/utils";
+
+type Theme = "light" | "dark";
+const THEME_STORAGE_KEY = "khalid-portfolio-theme";
 
 const FALLBACK_LINKS: NavItem[] = [
   { id: "work", label: "Work", url: "/#work", sort_order: 0, visible: true },
@@ -47,6 +51,23 @@ function HandUnderline() {
   );
 }
 
+function ThemeToggle({ theme, onToggle }: { theme: Theme; onToggle: () => void }) {
+  const Icon = theme === "dark" ? Sun : Moon;
+  const label = theme === "dark" ? "Switch to light mode" : "Switch to dark mode";
+
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-label={label}
+      title={label}
+      className="inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-transparent transition-colors hover:border-border hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+    >
+      <Icon aria-hidden="true" size={18} strokeWidth={1.7} />
+    </button>
+  );
+}
+
 export function Nav({
   navItems,
   settings,
@@ -64,6 +85,30 @@ export function Nav({
   const hash = useLocation({ select: (location) => location.hash });
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [theme, setTheme] = useState<Theme>("light");
+
+  useEffect(() => {
+    const savedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
+    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const initialTheme: Theme =
+      savedTheme === "light" || savedTheme === "dark"
+        ? savedTheme
+        : systemPrefersDark
+          ? "dark"
+          : "light";
+
+    setTheme(initialTheme);
+    document.documentElement.classList.toggle("dark", initialTheme === "dark");
+    document.documentElement.style.colorScheme = initialTheme;
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme: Theme = theme === "dark" ? "light" : "dark";
+    setTheme(nextTheme);
+    document.documentElement.classList.toggle("dark", nextTheme === "dark");
+    document.documentElement.style.colorScheme = nextTheme;
+    window.localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -95,7 +140,7 @@ export function Nav({
     <>
       <header
         className={cn(
-          "fixed inset-x-0 top-0 z-50 border-b border-transparent transition-colors duration-500",
+          "fixed inset-x-0 top-0 z-50 border-b border-transparent transition-colors duration-300",
           scrolled && !open && "border-border bg-background/85 backdrop-blur-md",
         )}
       >
@@ -104,53 +149,61 @@ export function Nav({
             Khalid Usman
           </Link>
 
-          <nav aria-label="Primary" className="hidden items-center gap-10 md:flex">
-            {links.map((link) => (
-              <a key={link.id} href={link.url} className="link-underline type-meta">
-                {link.label}
-              </a>
-            ))}
-            {resumeUrl ? (
-              <a
-                href={resumeUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="link-underline type-meta"
-              >
-                Resume
-              </a>
-            ) : null}
-          </nav>
+          <div className="flex items-center gap-2">
+            <nav aria-label="Primary" className="hidden items-center gap-10 md:flex">
+              {links.map((link) => (
+                <a key={link.id} href={link.url} className="link-underline type-meta">
+                  {link.label}
+                </a>
+              ))}
+              {resumeUrl ? (
+                <a
+                  href={resumeUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="link-underline type-meta"
+                >
+                  Resume
+                </a>
+              ) : null}
+            </nav>
+            <div className="hidden md:block">
+              <ThemeToggle theme={theme} onToggle={toggleTheme} />
+            </div>
 
-          <button
-            type="button"
-            className="-mr-2.5 flex size-11 items-center justify-center md:hidden"
-            aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open}
-            aria-controls="mobile-menu"
-            onClick={() => setOpen((value) => !value)}
-          >
-            <span aria-hidden className="relative block h-3.5 w-6">
-              <span
-                className={cn(
-                  "absolute inset-x-0 h-[1.5px] bg-foreground transition-[top,transform] duration-500 ease-editorial",
-                  open ? "top-[6.25px] rotate-45" : "top-0",
-                )}
-              />
-              <span
-                className={cn(
-                  "absolute inset-x-0 top-[6.25px] h-[1.5px] bg-foreground transition-opacity duration-300",
-                  open && "opacity-0",
-                )}
-              />
-              <span
-                className={cn(
-                  "absolute inset-x-0 h-[1.5px] bg-foreground transition-[top,transform] duration-500 ease-editorial",
-                  open ? "top-[6.25px] -rotate-45" : "top-[12.5px]",
-                )}
-              />
-            </span>
-          </button>
+            <div className="flex items-center md:hidden">
+              <ThemeToggle theme={theme} onToggle={toggleTheme} />
+              <button
+                type="button"
+                className="-mr-2.5 flex size-11 items-center justify-center"
+                aria-label={open ? "Close menu" : "Open menu"}
+                aria-expanded={open}
+                aria-controls="mobile-menu"
+                onClick={() => setOpen((value) => !value)}
+              >
+                <span aria-hidden className="relative block h-3.5 w-6">
+                  <span
+                    className={cn(
+                      "absolute inset-x-0 h-[1.5px] bg-foreground transition-[top,transform] duration-500 ease-editorial",
+                      open ? "top-[6.25px] rotate-45" : "top-0",
+                    )}
+                  />
+                  <span
+                    className={cn(
+                      "absolute inset-x-0 top-[6.25px] h-[1.5px] bg-foreground transition-opacity duration-300",
+                      open && "opacity-0",
+                    )}
+                  />
+                  <span
+                    className={cn(
+                      "absolute inset-x-0 h-[1.5px] bg-foreground transition-[top,transform] duration-500 ease-editorial",
+                      open ? "top-[6.25px] -rotate-45" : "top-[12.5px]",
+                    )}
+                  />
+                </span>
+              </button>
+            </div>
+          </div>
         </div>
       </header>
 
@@ -210,10 +263,15 @@ export function Nav({
             ) : null}
           </ol>
 
+          <div className="nb-menu-item flex items-center justify-between border-t py-4" style={{ "--i": menuLinks.length + 1 } as CSSProperties}>
+            <span className="type-meta text-muted-foreground">Appearance</span>
+            <ThemeToggle theme={theme} onToggle={toggleTheme} />
+          </div>
+
           {socials.length ? (
             <ul
               className="nb-menu-item type-meta mt-auto flex flex-wrap gap-x-6 gap-y-3 pt-12"
-              style={{ "--i": menuLinks.length + 1 } as CSSProperties}
+              style={{ "--i": menuLinks.length + 2 } as CSSProperties}
             >
               {socials.map((social) => (
                 <li key={social.label}>

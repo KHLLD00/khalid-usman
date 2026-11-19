@@ -3,7 +3,12 @@ import { createFileRoute } from "@tanstack/react-router";
 const SITE_URL = "https://khalid-usman.vercel.app";
 
 function escapeXml(value: string): string {
-  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
 }
 
 function urlEntry(loc: string, lastmod?: string, priority = "0.7") {
@@ -20,7 +25,7 @@ export const Route = createFileRoute("/sitemap.xml")({
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const { data: projects } = await supabaseAdmin
           .from("projects")
-          .select("slug, updated_at")
+          .select("slug, project_type, updated_at")
           .eq("published", true);
 
         const entries = [
@@ -29,10 +34,14 @@ export const Route = createFileRoute("/sitemap.xml")({
         ];
 
         for (const project of projects ?? []) {
+          const path =
+            project.project_type === "published-website" ? "websites" : "work";
           const lastmod = project.updated_at
             ? new Date(project.updated_at as string).toISOString().slice(0, 10)
             : undefined;
-          entries.push(urlEntry(`${SITE_URL}/work/${project.slug}`, lastmod, "0.8"));
+          entries.push(
+            urlEntry(`${SITE_URL}/${path}/${project.slug}`, lastmod, "0.8"),
+          );
         }
 
         const xml = `<?xml version="1.0" encoding="UTF-8"?>

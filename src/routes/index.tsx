@@ -23,10 +23,11 @@ import {
   toolkitItemsQuery,
 } from "@/lib/cms";
 import { cn, pad, stagger } from "@/lib/utils";
+import { canonicalUrl, jsonLdScript, OG_IMAGE, PERSON_SCHEMA, WEBSITE_SCHEMA } from "@/lib/seo";
 
-const TITLE = "Khalid Usman | UI/UX Designer & Web Designer";
+const TITLE = "Khalid Usman Adinoyi | UI/UX & Web Designer in Nigeria";
 const DESCRIPTION =
-  "UI/UX and web designer creating thoughtful, responsive digital experiences. Selected work, case studies and design thinking.";
+  "Khalid Usman Adinoyi is a Nigerian UI/UX designer and web designer creating intuitive digital products, user-centred experiences and modern websites for businesses.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -36,8 +37,14 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESCRIPTION },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: canonicalUrl("/") },
+      { property: "og:image", content: OG_IMAGE },
+      { property: "og:image:alt", content: "Khalid Usman Adinoyi portfolio" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: OG_IMAGE },
     ],
+    links: [{ rel: "canonical", href: canonicalUrl("/") }],
+    scripts: [jsonLdScript(PERSON_SCHEMA), jsonLdScript(WEBSITE_SCHEMA)],
   }),
   loader: async ({ context }) => {
     await Promise.all([

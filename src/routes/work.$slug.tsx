@@ -17,6 +17,7 @@ import {
   type Project,
 } from "@/lib/cms";
 import { projectViewTransitionName, useViewTransitionEnabled } from "@/lib/view-transition";
+import { canonicalUrl, OG_IMAGE } from "@/lib/seo";
 
 export const Route = createFileRoute("/work/$slug")({
   loader: async ({ context, params }) => {
@@ -30,6 +31,7 @@ export const Route = createFileRoute("/work/$slug")({
     return {
       title: project.title,
       description: project.short_description,
+      slug: project.slug,
     };
   },
   head: ({ loaderData }) => {
@@ -48,8 +50,12 @@ export const Route = createFileRoute("/work/$slug")({
         { property: "og:title", content: title },
         { property: "og:description", content: description },
         { property: "og:type", content: "article" },
+        { property: "og:url", content: canonicalUrl("/work/" + loaderData.slug) },
+        { property: "og:image", content: OG_IMAGE },
         { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:image", content: OG_IMAGE },
       ],
+      links: [{ rel: "canonical", href: canonicalUrl("/work/" + loaderData.slug) }],
     };
   },
   component: CaseStudy,

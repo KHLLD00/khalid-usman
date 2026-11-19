@@ -29,6 +29,7 @@ export const Route = createFileRoute("/websites/$slug")({
     return {
       title: project.title,
       description: project.short_description,
+      slug: project.slug,
     };
   },
   head: ({ loaderData }) => {
@@ -47,8 +48,12 @@ export const Route = createFileRoute("/websites/$slug")({
         { property: "og:title", content: title },
         { property: "og:description", content: description },
         { property: "og:type", content: "website" },
+        { property: "og:url", content: canonicalUrl("/websites/" + loaderData.slug) },
+        { property: "og:image", content: OG_IMAGE },
         { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:image", content: OG_IMAGE },
       ],
+      links: [{ rel: "canonical", href: canonicalUrl("/websites/" + loaderData.slug) }],
     };
   },
   component: WebsiteDetail,

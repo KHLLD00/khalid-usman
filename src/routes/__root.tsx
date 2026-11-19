@@ -11,8 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-
-const SITE_URL = "https://khalid-usman.vercel.app";
+import { OG_IMAGE } from "@/lib/seo";
 
 function NotFoundComponent() {
   return (
@@ -79,27 +78,28 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Khalid Usman | UI/UX & Web Designer" },
+      { title: "Khalid Usman Adinoyi | UI/UX & Web Designer in Nigeria" },
       {
         name: "description",
         content:
-          "Khalid Usman is a UI/UX and web designer creating intuitive digital products, responsive websites and thoughtful user experiences.",
+          "Khalid Usman Adinoyi is a Nigerian UI/UX designer and web designer creating intuitive digital products and responsive websites for people and businesses.",
       },
-      { name: "author", content: "Khalid Usman" },
+      { name: "author", content: "Khalid Usman Adinoyi" },
       { property: "og:site_name", content: "Khalid Usman" },
-      { property: "og:title", content: "Khalid Usman | UI/UX & Web Designer" },
+      { property: "og:image", content: OG_IMAGE },
+      { property: "og:image:alt", content: "Khalid Usman Adinoyi portfolio" },
+      { name: "twitter:image", content: OG_IMAGE },
+      { property: "og:title", content: "Khalid Usman Adinoyi | UI/UX & Web Designer in Nigeria" },
       {
         property: "og:description",
         content:
-          "UI/UX designer and web designer creating intuitive digital products and responsive websites.",
+          "Nigerian UI/UX and web designer creating intuitive digital products and responsive websites.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: SITE_URL },
-      { name: "twitter:card", content: "summary" },
+      { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:creator", content: "@KAY_UIUX" },
     ],
     links: [
-      { rel: "canonical", href: SITE_URL },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -122,7 +122,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en-NG">
       <head>
         <HeadContent />
       </head>

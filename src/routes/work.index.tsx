@@ -6,12 +6,13 @@ import { Nav } from "@/components/site/Nav";
 import { ProjectSheets } from "@/components/site/ProjectSheet";
 import { navItemsQuery, projectsQuery, settingsQuery, SETTINGS_FALLBACK } from "@/lib/cms";
 import { cn, stagger } from "@/lib/utils";
+import { canonicalUrl, OG_IMAGE } from "@/lib/seo";
 
 type WorkFilter = "ui-ux" | "websites";
 
-const TITLE = "Work | Khalid Usman";
+const TITLE = "UI/UX & Web Design Portfolio | Khalid Usman Adinoyi";
 const DESCRIPTION =
-  "The complete portfolio of Khalid Usman: UI/UX case studies and published websites.";
+  "Explore UI/UX case studies and websites designed by Khalid Usman Adinoyi, a Nigerian UI/UX and web designer.";
 
 export const Route = createFileRoute("/work/")({
   validateSearch: (search: Record<string, unknown>): { type?: WorkFilter } =>
@@ -22,7 +23,13 @@ export const Route = createFileRoute("/work/")({
       { name: "description", content: DESCRIPTION },
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESCRIPTION },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: canonicalUrl("/work") },
+      { property: "og:image", content: OG_IMAGE },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: OG_IMAGE },
     ],
+    links: [{ rel: "canonical", href: canonicalUrl("/work") }],
   }),
   loader: async ({ context }) => {
     await Promise.all([

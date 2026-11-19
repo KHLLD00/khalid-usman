@@ -12,6 +12,8 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
+const SITE_URL = "https://khalid-usman.vercel.app";
+
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -77,28 +79,27 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Khalid Usman — Product Designer" },
+      { title: "Khalid Usman | UI/UX & Web Designer" },
       {
         name: "description",
         content:
-          "Product designer focused on creating thoughtful digital experiences, interfaces and products.",
+          "Khalid Usman is a UI/UX and web designer creating intuitive digital products, responsive websites and thoughtful user experiences.",
       },
       { name: "author", content: "Khalid Usman" },
-      { property: "og:title", content: "Khalid Usman — Product Designer" },
+      { property: "og:site_name", content: "Khalid Usman" },
+      { property: "og:title", content: "Khalid Usman | UI/UX & Web Designer" },
       {
         property: "og:description",
         content:
-          "Product designer focused on creating thoughtful digital experiences, interfaces and products.",
+          "UI/UX designer and web designer creating intuitive digital products and responsive websites.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:image", content: "https://khalid-usman.vercel.app/og-image.jpg" },
-      { property: "og:image:width", content: "1200" },
-      { property: "og:image:height", content: "800" },
-      { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:url", content: SITE_URL },
+      { name: "twitter:card", content: "summary" },
       { name: "twitter:creator", content: "@KAY_UIUX" },
-      { name: "twitter:image", content: "https://khalid-usman.vercel.app/og-image.jpg" },
     ],
     links: [
+      { rel: "canonical", href: SITE_URL },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
